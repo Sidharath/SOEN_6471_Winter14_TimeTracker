@@ -34,12 +34,3 @@ E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Prop
 E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\Common.csproj.GenerateResource.Cache
 E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.dll
 E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.pdb
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.dll
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.pdb
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\bin\Debug\Microsoft.Practices.ObjectBuilder.dll
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Configuration.Manageability.Properties.Resources.resources
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Properties.Resources.resources
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\Common.csproj.GenerateResource.Cache
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.dll
-C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.pdb

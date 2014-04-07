@@ -4,60 +4,59 @@
         <name>NarolaInfotech.Data</name>
     </assembly>
     <members>
-        <member name="T:NarolaInfotech.Data.ParameterCache">
+        <member name="T:NarolaInfotech.Data.Configuration.IDatabaseAssembler">
             <summary>
-            <para>
-            Provides parameter caching services for dynamic parameter discovery of stored procedures.
-            Eliminates the round-trip to the database to derive the parameters and types when a command
-            is executed more than once.
-            </para>
+            Represents the process to build an instance of a concrete <see cref="T:NarolaInfotech.Data.Database"/> described by configuration information.
             </summary>
+            <seealso cref="T:NarolaInfotech.Data.DatabaseCustomFactory"/>
         </member>
-        <member name="M:NarolaInfotech.Data.ParameterCache.SetParameters(System.Data.Common.DbCommand,NarolaInfotech.Data.Database)">
+        <member name="M:NarolaInfotech.Data.Configuration.IDatabaseAssembler.Assemble(System.String,System.Configuration.ConnectionStringSettings,NarolaInfotech.Common.Configuration.IConfigurationSource)">
             <summary>
-            <para>
-            Populates the parameter collection for a command wrapper from the cache 
-            or performs a round-trip to the database to query the parameters.
-            </para>
+            Builds an instance of the concrete subtype of <see cref="T:NarolaInfotech.Data.Database"/> the receiver knows how to build, based on 
+            the provided connection string and any configuration information that might be contained by the 
+            <paramref name="configurationSource"/>.
             </summary>
-            <param name="command">
-            <para>The command to add the parameters.</para>
-            </param>
-            <param name="database">
-            <para>The database to use to set the parameters.</para>
-            </param>
+            <param name="name">The name for the new database instance.</param>
+            <param name="connectionStringSettings">The connection string for the new database instance.</param>
+            <param name="configurationSource">The source for any additional configuration information.</param>
+            <returns>The new database instance.</returns>
         </member>
-        <member name="M:NarolaInfotech.Data.ParameterCache.Clear">
+        <member name="T:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute">
             <summary>
-            <para>Empties the parameter cache.</para>
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.ParameterCache.AddParametersFromCache(System.Data.Common.DbCommand,NarolaInfotech.Data.Database)">
-            <summary>
-            <para>Adds parameters to a command using the cache.</para>
-            </summary>
-            <param name="command">
-            <para>The command to add the parameters.</para>
-            </param>
-            <param name="database">The database to use.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.ParameterCache.AlreadyCached(System.Data.IDbCommand,NarolaInfotech.Data.Database)">
-            <summary>
-            <para>Checks to see if a cache entry exists for a specific command on a specific connection</para>
-            </summary>
-            <param name="command">
-            <para>The command to check.</para>
-            </param>
-            <param name="database">The database to check.</param>
-            <returns>True if the parameters are already cached for the provided command, false otherwise</returns>
-        </member>
-        <member name="T:NarolaInfotech.Data.GenericDatabase">
-            <summary>
-            The <see cref="T:NarolaInfotech.Data.GenericDatabase"/> is used when no specific behavior is required or known for a database.
+            Specifies what type to use to build the concrete <see cref="T:NarolaInfotech.Data.Database"/> type this attribute is bound to. 
+            This class cannot be inherited.
             </summary>
             <remarks>
-            This database exposes the <see cref="T:System.Data.Common.DbProviderFactory"/> used to allow for a provider 
-            agnostic programming model.
+            This attribute is used by the <see cref="T:NarolaInfotech.Data.DatabaseCustomFactory"/> once the <see cref="T:NarolaInfotech.Data.Database"/> type to build is 
+            known based on the configuration information to determine how to build the actual <b>Database</b> instance.
+            </remarks>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute"/> class with an assembler type.
+            </summary>
+            <param name="assemblerType">The assembler type. Must implement the <see cref="T:NarolaInfotech.Data.Configuration.IDatabaseAssembler"/> interface.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute.AssemblerType">
+            <summary>
+            Gets the database assembler type.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Oracle.OracleDatabase">
+            <summary>
+            <para>Represents an Oracle database.</para>
+            </summary>
+            <remarks> 
+            <para>
+            Internally uses Oracle .NET Managed Provider from Microsoft (<see cref="N:System.Data.OracleClient"/>) to connect to a Oracle 9i database.
+            </para>  
+            <para>
+            When retrieving a result set, it will build the package name. The package name should be set based
+            on the stored procedure prefix and this should be set via configuration. For 
+            example, a package name should be set as prefix of "ENTLIB_" and package name of
+            "pkgENTLIB_ARCHITECTURE". For your applications, this is required only if you are defining your stored procedures returning 
+            ref cursors.
+            </para>
             </remarks>
         </member>
         <member name="T:NarolaInfotech.Data.Database">
@@ -976,1095 +975,6 @@
             	Gets the actual connection.
             </summary>
         </member>
-        <member name="M:NarolaInfotech.Data.GenericDatabase.#ctor(System.String,System.Data.Common.DbProviderFactory)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.GenericDatabase"/> class with a connection string and 
-            a provider factory.
-            </summary>
-            <param name="connectionString">The connection string.</param>
-            <param name="dbProviderFactory">The provider factory.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.GenericDatabase.DeriveParameters(System.Data.Common.DbCommand)">
-            <summary>
-            This operation is not supported in this class.
-            </summary>
-            <param name="discoveryCommand">The <see cref="T:System.Data.Common.DbCommand"/> to do the discovery.</param>
-            <remarks>There is no generic way to do it, the operation is not implemented for <see cref="T:NarolaInfotech.Data.GenericDatabase"/>.</remarks>
-            <exception cref="T:System.NotSupportedException">Thrown whenever this method is called.</exception>
-        </member>
-        <member name="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings">
-            <summary>
-            Oracle-specific configuration section.
-            </summary>
-        </member>
-        <member name="F:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.SectionName">
-            <summary>
-            The section name for the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/>.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/> class with default values.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.GetSettings(NarolaInfotech.Common.Configuration.IConfigurationSource)">
-            <summary>
-            Retrieves the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/> from the configuration source.
-            </summary>
-            <param name="configurationSource">The configuration source to retrieve the configuration from.</param>
-            <returns>The configuration section, or <see langword="null"/> (<b>Nothing</b> in Visual Basic) 
-            if not present in the configuration source.</returns>
-        </member>
-        <member name="P:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.OracleConnectionsData">
-            <summary>
-            Collection of Oracle-specific connection information.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.TransactionScopeConnections">
-            <summary>
-            	This class manages the connections that will be used when transactions are active
-            	as a result of instantiating a <see cref="T:System.Transactions.TransactionScope"/>. When a transaction
-            	is active, all database access must be through this single connection unless you want
-            	to use a distributed transaction, which is an expensive operation.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.TransactionScopeConnections.GetConnection(NarolaInfotech.Data.Database)">
-            <summary>
-            	Returns a connection for the current transaction. This will be an existing <see cref="T:System.Data.Common.DbConnection"/>
-            	instance or a new one if there is a <see cref="T:System.Transactions.TransactionScope"/> active. Otherwise this method
-            	returns null.
-            </summary>
-            <param name="db"></param>
-            <returns>Either a <see cref="T:System.Data.Common.DbConnection"/> instance or null.</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.TransactionScopeConnections.OnTransactionCompleted(System.Object,System.Transactions.TransactionEventArgs)">
-            <summary>
-            	This event handler is called whenever a transaction is about to be disposed, which allows
-            	us to remove the transaction from our list and dispose the connection instance we created.
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs">
-            <summary>
-            Provides data for the <see cref="E:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider.commandFailed"/> event.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.#ctor(System.String,System.String,System.Exception)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs"/> class.
-            </summary>
-            <param name="commandText">The text of the command that failed its execution.</param>
-            <param name="connectionString">The connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.</param>
-            <param name="exception">The exception thrown when the command failed.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.CommandText">
-            <summary>
-            Gets the text of the command that failed its execution.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.ConnectionString">
-            <summary>
-            Gets the connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.Exception">
-            <summary>
-            Gets the exception thrown when the command failed.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.DatabaseConfigurationView">
-            <summary>
-            <para>Represents a view for navigating the <see cref="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings"/> configuration data.</para>
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.DatabaseConfigurationView.#ctor(NarolaInfotech.Common.Configuration.IConfigurationSource)">
-            <summary>
-            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.DatabaseConfigurationView"/> class with an <see cref="T:NarolaInfotech.Common.Configuration.IConfigurationSource"/> object.</para>
-            </summary>
-            <param name="configurationSource">
-            <para>A <see cref="T:NarolaInfotech.Common.Configuration.IConfigurationSource"/> object.</para>
-            </param>
-        </member>
-        <member name="M:NarolaInfotech.Data.DatabaseConfigurationView.GetConnectionStringSettings(System.String)">
-            <summary>
-            Returns the <see cref="T:System.Configuration.ConnectionStringSettings"/> object with the given name from the connection strings
-            configuration section in the receiver's configuration source.
-            </summary>
-            <remarks>
-            The connection string will be retrieved from the configuration source if it contains the connection strings section,
-            otherwise it will be retrieved from the default configuration file.
-            </remarks>
-            <param name="name">The name for the desired connection string configuration.</param>
-            <returns>The connection string configuration.</returns>
-            <exception cref="T:System.ArgumentException">if <paramref name="name"/> is <see langword="null"/> (<b>Nothing</b> in Visual Basic) or empty.</exception>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException">if the connection string object is not found, or if it does not specify a provider name.</exception>
-        </member>
-        <member name="M:NarolaInfotech.Data.DatabaseConfigurationView.GetProviderMapping(System.String,System.String)">
-            <summary>
-            Returns the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> that specifies the mapping between an ADO.NET provider factory and a
-            <see cref="T:NarolaInfotech.Data.Database"/> instance.
-            </summary>
-            <remarks>
-            The mapping based in logical names will be probed first. If there is no success, the default type based mappings
-            will be considered. If no default mapping is defined for the provider factory type, the generic database will be used.
-            </remarks>
-            <param name="name">The name of the <see cref="T:NarolaInfotech.Data.Database"/> instance.</param>
-            <param name="dbProviderName">The logical provider name.</param>
-            <returns>The <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> that matches the <paramref name="dbProviderName"/>.</returns>
-        </member>
-        <member name="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings">
-            <summary>
-            <para>Gets the <see cref="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings"/> configuration data.</para>
-            </summary>
-            <returns>
-            <para>The <see cref="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings"/> configuration data.</para>
-            </returns>
-        </member>
-        <member name="P:NarolaInfotech.Data.DatabaseConfigurationView.DefaultName">
-            <summary>
-            <para>Gets the name of the default configured <see cref="T:NarolaInfotech.Data.Database"/>.</para>
-            </summary>
-            <returns>
-            <para>The name of the default configured <see cref="T:NarolaInfotech.Data.Database"/>.</para>
-            </returns>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringConnectionStringPartName">
-            <summary>
-              Looks up a localized string similar to Connection string.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringPolicyNameTemplate">
-            <summary>
-              Looks up a localized string similar to Specify settings for connection &apos;{0}&apos;.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringProviderNamePartName">
-            <summary>
-              Looks up a localized string similar to Provider name.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringsCategoryName">
-            <summary>
-              Looks up a localized string similar to Connection strings.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.DatabaseCategoryName">
-            <summary>
-              Looks up a localized string similar to Database.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.DatabaseSettingsDefaultDatabasePartName">
-            <summary>
-              Looks up a localized string similar to Default database.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.DatabaseSettingsPolicyName">
-            <summary>
-              Looks up a localized string similar to Specify Database Block Settings.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.OracleConnectionPackagesPartName">
-            <summary>
-              Looks up a localized string similar to Package mappings.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.OracleConnectionPolicyNameTemplate">
-            <summary>
-              Looks up a localized string similar to Specify settings for oracle connection &apos;{0}&apos;.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.OracleConnectionsCategoryName">
-            <summary>
-              Looks up a localized string similar to Oracle packages.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ProviderMappingDatabaseTypePartName">
-            <summary>
-              Looks up a localized string similar to Database type.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ProviderMappingPolicyNameTemplate">
-            <summary>
-              Looks up a localized string similar to Specify settings for provider &apos;{0}&apos;.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ProviderMappingsCategoryName">
-            <summary>
-              Looks up a localized string similar to Provider mappings.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.DbProviderMapping">
-            <summary>
-            Represents the mapping from an ADO.NET provider to an Enterprise Library <see cref="T:NarolaInfotech.Data.Database"/>.
-            </summary>
-            <remarks>
-            <para>
-            The Enterprise Library Data Access Application Block leverages the ADO.NET 2.0 provider factories. To determine what type of <see cref="T:NarolaInfotech.Data.Database"/> matches a given provider factory type, the optional 
-            <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> configuration objects can be defined in the block's configuration section.
-            </para>
-            <para>
-            If a mapping is not present for a given provider type, sensible defaults will be used:
-            <list type="bullet">
-            <item>For provider name "System.Data.SqlClient", or for a provider of type <see cref="T:System.Data.SqlClient.SqlClientFactory"/>, the 
-            <see cref="T:NarolaInfotech.Data.Sql.SqlDatabase"/> will be used.</item>
-            <item>For provider name "System.Data.OracleClient", or for a provider of type <see cref="T:System.Data.OracleClient.OracleClientFactory"/>, the 
-            <see cref="T:NarolaInfotech.Data.Oracle.OracleDatabase"/> will be used.</item>
-            <item>In any other case, the <see cref="T:NarolaInfotech.Data.GenericDatabase"/> will be used.</item>
-            </list>
-            </para>
-            </remarks>
-            <seealso cref="M:NarolaInfotech.Data.DatabaseConfigurationView.GetProviderMapping(System.String,System.String)"/>
-            <seealso cref="T:System.Data.Common.DbProviderFactory"/>
-        </member>
-        <member name="F:NarolaInfotech.Data.Configuration.DbProviderMapping.DefaultSqlProviderName">
-            <summary>
-            Default name for the Sql managed provider.
-            </summary>
-        </member>
-        <member name="F:NarolaInfotech.Data.Configuration.DbProviderMapping.DefaultOracleProviderName">
-            <summary>
-            Default name for the Oracle managed provider.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.DbProviderMapping.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> class.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.DbProviderMapping.#ctor(System.String,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> class with name and <see cref="T:NarolaInfotech.Data.Database"/> type.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.DbProviderMapping.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> class with name and fully qualified type name of the <see cref="T:NarolaInfotech.Data.Database"/> type.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.DbProviderMapping.DatabaseType">
-            <summary>
-            Gets or sets the type of database to use for the mapped ADO.NET provider.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.DbProviderMapping.DatabaseTypeName">
-            <summary>
-            Gets or sets the fully qualified type name of the database to use for the mapped ADO.NET provider.
-            </summary>
-            <value>
-            The fully qualified type name of the database to use for the mapped ADO.NET provider.
-            </value>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.DbProviderMapping.DbProviderName">
-            <summary>
-             Gets the logical name of the ADO.NET provider.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.DatabaseSettings">
-            <summary>
-            <para>Represents the root configuration for data.</para>
-            </summary>
-            <remarks>
-            <para>The class maps to the <c>databaseSettings</c> element in configuration.</para>
-            </remarks>
-        </member>
-        <member name="F:NarolaInfotech.Data.Configuration.DatabaseSettings.SectionName">
-            <summary>
-            The name of the data configuration section.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.DatabaseSettings.#ctor">
-            <summary>
-            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/> class.</para>
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.DatabaseSettings.GetDatabaseSettings(NarolaInfotech.Common.Configuration.IConfigurationSource)">
-            <summary>
-            Retrieves the <see cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/> from a configuration source.
-            </summary>
-            <param name="configurationSource">The <see cref="T:NarolaInfotech.Common.Configuration.IConfigurationSource"/> to query for the database settings.</param>
-            <returns>The database settings from the configuration source, or <see langword="null"/> (<b>Nothing</b> in Visual Basic) if the 
-            configuration source does not contain database settings.</returns>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.DatabaseSettings.DefaultDatabase">
-            <summary>
-            <para>Gets or sets the default database instance name.</para>
-            </summary>
-            <value>
-            <para>The default database instance name.</para>
-            </value>
-            <remarks>
-            <para>This property maps to the <c>defaultInstance</c> element in configuration.</para>
-            </remarks>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.DatabaseSettings.ProviderMappings">
-            <summary>
-            Holds the optional mappings from ADO.NET's database providers to Enterprise Library's database types.
-            </summary>
-            <seealso cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/>
-        </member>
-        <member name="T:NarolaInfotech.Data.CachingMechanism">
-            <devdoc>
-            CachingMechanism provides caching support for stored procedure 
-            parameter discovery and caching
-            </devdoc>
-        </member>
-        <member name="M:NarolaInfotech.Data.CachingMechanism.CloneParameters(System.Data.IDataParameter[])">
-            <devdoc>
-            Create and return a copy of the IDataParameter array.
-            </devdoc>        
-        </member>
-        <member name="M:NarolaInfotech.Data.CachingMechanism.Clear">
-            <devdoc>
-            Empties all items from the cache
-            </devdoc>
-        </member>
-        <member name="M:NarolaInfotech.Data.CachingMechanism.AddParameterSetToCache(System.String,System.Data.IDbCommand,System.Data.IDataParameter[])">
-            <devdoc>
-            Add a parameter array to the cache for the command.
-            </devdoc>        
-        </member>
-        <member name="M:NarolaInfotech.Data.CachingMechanism.GetCachedParameterSet(System.String,System.Data.IDbCommand)">
-            <devdoc>
-            Gets a parameter array from the cache for the command. Returns null if no parameters are found.
-            </devdoc>        
-        </member>
-        <member name="M:NarolaInfotech.Data.CachingMechanism.IsParameterSetCached(System.String,System.Data.IDbCommand)">
-            <devdoc>
-            Gets if a given stored procedure on a specific connection string has a cached parameter set
-            </devdoc>        
-        </member>
-        <member name="T:NarolaInfotech.Data.Properties.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.BlockName">
-            <summary>
-              Looks up a localized string similar to Enterprise Library Data Access Application Block.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.CommandExecutedCounterHelpResource">
-            <summary>
-              Looks up a localized string similar to Commands Executed/sec is the rate at which database commands were executed..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.CommandFailedCounterHelpResource">
-            <summary>
-              Looks up a localized string similar to Commands Failed/sec is tha rate at which database commands failed to execute..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ConfigurationFailureCreatingDatabase">
-            <summary>
-              Looks up a localized string similar to A configuration failure occurred while creating database ‘{0}’..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ConnectionFailedCounterHelpResource">
-            <summary>
-              Looks up a localized string similar to Connections Failed/sec is the rate at which database connections failed to open..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ConnectionOpenedCounterHelpResource">
-            <summary>
-              Looks up a localized string similar to Connections Opened/sec is the rate at which database connections were opened..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.CounterCategoryHelpResourceName">
-            <summary>
-              Looks up a localized string similar to Enterprise Library Data Performance Counter Instances.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ErrorConnectionFailedExtraInformation">
-            <summary>
-              Looks up a localized string similar to The connection string used was &quot;{0}&quot;..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ErrorConnectionFailedMessage">
-            <summary>
-              Looks up a localized string similar to The error occurred using the &quot;{0}&quot; database instance while attempting to open the database connection..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionCommandNotSqlCommand">
-            <summary>
-              Looks up a localized string similar to The command must be a SqlCommand..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionDatabaseTypeDoesNotHaveAssemblerAttribute">
-            <summary>
-              Looks up a localized string similar to The database type {0} for the name {1} does not have the required [DatabaseAssembler] attribute required to build the database object..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionDatabaseTypeDoesNotHaveRequiredConfigurationTypeAttribute">
-            <summary>
-              Looks up a localized string similar to The database type {0} does not have the required ConfigurationElementType attribute..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionMessageParameterMatchFailure">
-            <summary>
-              Looks up a localized string similar to The number of parameters does not match number of values for stored procedure..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionMessageUpdateDataSetArgumentFailure">
-            <summary>
-              Looks up a localized string similar to At least one command must be initialized.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionMessageUpdateDataSetRowFailure">
-            <summary>
-              Looks up a localized string similar to Failed to update row .
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionNoDatabaseDefined">
-            <summary>
-              Looks up a localized string similar to The requested database {0} is not defined in configuration..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionNoProviderDefinedForConnectionString">
-            <summary>
-              Looks up a localized string similar to The requested database {0} does not have provider name set in the connection string..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionNullOrEmptyString">
-            <summary>
-              Looks up a localized string similar to The value can not be null or an empty string..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionParameterDiscoveryNotSupportedOnGenericDatabase">
-            <summary>
-              Looks up a localized string similar to Parameter discovery is not supported for connections using GenericDatabase. You must specify the parameters explicitly, or configure the connection to use a type deriving from Database that supports parameter discovery..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionTableNameArrayEmpty">
-            <summary>
-              Looks up a localized string similar to The table name array used to map results to user-specified table names cannot be empty..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionTypeNotDatabaseAssembler">
-            <summary>
-              Looks up a localized string similar to Type {0} is not an implementation of IDatabaseAssembler for DatabaseAssemblerAttribute..
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.Password">
-            <summary>
-              Looks up a localized string similar to password=,pwd=.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Properties.Resources.UserName">
-            <summary>
-              Looks up a localized string similar to user id=,uid=.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLoggerCustomFactory">
-            <summary>
-            This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
-            Represents the process to build a <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/> according to instrumentation configuration.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DefaultDataEventLoggerCustomFactory.DoCreateObject(NarolaInfotech.Common.Instrumentation.Configuration.InstrumentationConfigurationSection)">
-            <summary>
-            This method supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
-            Builds a <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/>.
-            </summary>
-            <param name="instrumentationConfigurationSection">The instrumentation section that is used as configuration.</param>
-            <returns>A fully initialized instance of <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/>.</returns>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute">
-            <summary>
-            Specifies what type to use to build the concrete <see cref="T:NarolaInfotech.Data.Database"/> type this attribute is bound to. 
-            This class cannot be inherited.
-            </summary>
-            <remarks>
-            This attribute is used by the <see cref="T:NarolaInfotech.Data.DatabaseCustomFactory"/> once the <see cref="T:NarolaInfotech.Data.Database"/> type to build is 
-            known based on the configuration information to determine how to build the actual <b>Database</b> instance.
-            </remarks>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute.#ctor(System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute"/> class with an assembler type.
-            </summary>
-            <param name="assemblerType">The assembler type. Must implement the <see cref="T:NarolaInfotech.Data.Configuration.IDatabaseAssembler"/> interface.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.DatabaseAssemblerAttribute.AssemblerType">
-            <summary>
-            Gets the database assembler type.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs">
-            <summary>
-            Provides data for the <see cref="E:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider.commandExecuted"/> event.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs.#ctor(System.DateTime)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs"/> class.
-            </summary>
-            <param name="startTime">The time the command started its execution.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs.StartTime">
-            <summary>
-            Gets the time the command started its execution.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData">
-            <summary>
-            Oracle-specific connection information.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData"/> class with default values.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData.Packages">
-            <summary>
-            Gets a collection of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> objects.
-            </summary>
-            <value>
-            A collection of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> objects.
-            </value>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.CommandFailedEvent">
-            <summary>
-            Represents the WMI event fired when a command failed during its execution.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.DataEvent">
-            <summary>
-            Base class for data WMI events.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DataEvent.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DataEvent"/> class.
-            </summary>
-            <param name="instanceName">name of the <see cref="T:NarolaInfotech.Data.Database"/> this event applies on.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.DataEvent.InstanceName">
-            <summary>
-            Gets the name of the <see cref="T:NarolaInfotech.Data.Database"/> this event applies on.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.#ctor(System.String,System.String,System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.CommandFailedEvent"/> class.
-            </summary>
-            <param name="instanceName">The name of the <see cref="T:NarolaInfotech.Data.Database"/> instance that executed the failed command.</param>
-            <param name="connectionString">The connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.</param>
-            <param name="commandText">The text of the command that failed its execution.</param>
-            <param name="exceptionMessage">The message that describes the exception thrown when the command failed.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.CommandText">
-            <summary>
-            Gets the text of the command that failed its execution.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.ConnectionString">
-            <summary>
-            Gets the connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.ExceptionMessage">
-            <summary>
-            Gets the message that describes the exception thrown when the command failed.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.IDatabaseAssembler">
-            <summary>
-            Represents the process to build an instance of a concrete <see cref="T:NarolaInfotech.Data.Database"/> described by configuration information.
-            </summary>
-            <seealso cref="T:NarolaInfotech.Data.DatabaseCustomFactory"/>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.IDatabaseAssembler.Assemble(System.String,System.Configuration.ConnectionStringSettings,NarolaInfotech.Common.Configuration.IConfigurationSource)">
-            <summary>
-            Builds an instance of the concrete subtype of <see cref="T:NarolaInfotech.Data.Database"/> the receiver knows how to build, based on 
-            the provided connection string and any configuration information that might be contained by the 
-            <paramref name="configurationSource"/>.
-            </summary>
-            <param name="name">The name for the new database instance.</param>
-            <param name="connectionStringSettings">The connection string for the new database instance.</param>
-            <param name="configurationSource">The source for any additional configuration information.</param>
-            <returns>The new database instance.</returns>
-        </member>
-        <member name="T:NarolaInfotech.Data.DatabaseProviderFactory">
-            <summary>
-            <para>Represents a factory for creating named instances of <see cref="T:NarolaInfotech.Data.Database"/> objects.</para>
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.DatabaseProviderFactory.#ctor">
-            <summary>
-            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.DatabaseProviderFactory"/> class 
-            with the default configuration source.</para>
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.DatabaseProviderFactory.#ctor(NarolaInfotech.Common.Configuration.IConfigurationSource)">
-            <summary>
-            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.DatabaseProviderFactory"/> class 
-            with the given configuration source.</para>
-            </summary>
-            <param name="configurationSource">The source for configuration information.</param>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.Manageability.ProviderMappingSetting">
-            <summary>
-            Represents the configuration information for a provider mapping defined by the Database Application Block
-            configuration section.
-            </summary>
-            <seealso cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/>
-            <seealso cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ProviderMappingSetting.DatabaseType">
-            <summary>
-            Gets the type of the database to which the represented database mapping 
-            maps its provider name.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationListenerBinder">
-            <summary>
-            This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
-            Explicit binder for data access instrumentation.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationListenerBinder.Bind(System.Object,System.Object)">
-            <summary>
-            Binds the events exposed by the source to the handlers in the listener.
-            </summary>
-            <param name="source">The source of instrumentation events. Must be an instance of <see cref="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider"/>.</param>
-            <param name="listener">The listener for instrumentation events. Must be an instance of <see cref="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationListener"/>.</param>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent">
-            <summary>
-            Represents the WMI event fired when an error in the configuration for the data access block is detected.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent"/> class.
-            </summary>
-            <param name="instanceName">Name of the <see cref="T:NarolaInfotech.Data.Database"/> instance the failure ocurred in.</param>
-            <param name="exceptionMessage">The message that represents the exception thrown when the configuration error was detected.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent.ExceptionMessage">
-            <summary>
-            Gets the message that represents the exception thrown when the configuration error was detected.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.OverrideWithGroupPoliciesForConfigurationSection(NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey)">
-            <summary>
-            Overrides the <paramref name="configurationSection"/>'s properties with the Group Policy values from 
-            the registry.
-            </summary>
-            <param name="configurationSection">The configuration section that must be managed.</param>
-            <param name="policyKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.GenerateWmiObjectsForConfigurationSection(NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
-            <summary>
-            Creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> instances that describe the <paramref name="configurationSection"/>.
-            </summary>
-            <param name="configurationSection">The configuration section that must be managed.</param>
-            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.OverrideWithGroupPoliciesAndGenerateWmiObjectsForConfigurationElements(NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings,System.Boolean,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,System.Boolean,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
-            <summary>
-            Overrides the <paramref name="configurationSection"/>'s configuration elements' properties 
-            with the Group Policy values from the registry, if any, and creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> 
-            instances that describe these configuration elements.
-            </summary>
-            <param name="configurationSection">The configuration section that must be managed.</param>
-            <param name="readGroupPolicies"><see langword="true"/> if Group Policy overrides must be applied; otherwise, 
-            <see langword="false"/>.</param>
-            <param name="machineKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
-            configuration section at the machine level, or <see langword="null"/> 
-            if there is no such registry key.</param>
-            <param name="userKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
-            configuration section at the user level, or <see langword="null"/> 
-            if there is no such registry key.</param>
-            <param name="generateWmiObjects"><see langword="true"/> if WMI objects must be generated; otherwise, 
-            <see langword="false"/>.</param>
-            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.SectionCategoryName">
-            <summary>
-            Gets the name of the category that represents the whole configuration section.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.SectionName">
-            <summary>
-            Gets the name of the managed configuration section.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Oracle.IOraclePackage">
-            <summary>
-            Represents the description of an oracle package mapping.
-            </summary>
-            <remarks>
-            <see cref="T:NarolaInfotech.Data.Oracle.IOraclePackage"/> is used to specify how to transform store procedure names 
-            into package qualified Oracle stored procedure names.
-            </remarks>
-            <seealso cref="T:NarolaInfotech.Data.Oracle.OracleDatabase"/>
-        </member>
-        <member name="P:NarolaInfotech.Data.Oracle.IOraclePackage.Name">
-            <summary>
-            When implemented by a class, gets the name of the package.
-            </summary>
-            <value>
-            The name of the package.
-            </value>
-        </member>
-        <member name="P:NarolaInfotech.Data.Oracle.IOraclePackage.Prefix">
-            <summary>
-            When implemented by a class, gets the prefix for the package.
-            </summary>
-            <value>
-            The prefix for the package.
-            </value>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller">
-            <summary>
-            Represents the installer for the instrumentation events. Not intended for direct use.
-            </summary>
-        </member>
-        <member name="F:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller"/> class.
-            Lets the system know that the InstallUtil.exe tool will be run against this assembly
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger">
-            <summary>
-            The instrumentation gateway when no instances of the objects from the block are involved.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger.#ctor(System.Boolean,System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/> class, specifying whether 
-            logging to the event log and firing WMI events is allowed.
-            </summary>
-            <param name="eventLoggingEnabled"><b>true</b> if writing to the event log is allowed, <b>false</b> otherwise.</param>
-            <param name="wmiEnabled"><b>true</b> if firing WMI events is allowed, <b>false</b> otherwise.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger.LogConfigurationError(System.Exception,System.String)">
-            <summary>
-            Logs the occurrence of a configuration error for the Enterprise Library Data Access Application Block through the 
-            available instrumentation mechanisms.
-            </summary>
-            <param name="instanceName">Name of the <see cref="T:NarolaInfotech.Data.Database"/> instance in which the configuration error was detected.</param>
-            <param name="exception">The exception raised for the configuration error.</param>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSetting">
-            <summary>
-            Represents the configuration information for an Oracle database connection defined by the Oracle
-            specific connection information configuration section.
-            </summary>
-            <remarks>
-            The collection of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> instances
-            defined by an instance of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData"/>
-            is represented as a <see cref="T:System.String"/> array contaning key/value pairs.
-            </remarks>
-            <seealso cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/>
-            <seealso cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData"/>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSetting.Packages">
-            <summary>
-            Gets the package mapping information specified by the represented Oracle connection data object as a
-            <see cref="T:System.String"/> array of key/value pairs.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringSetting">
-            <summary>
-            Represents the configuration information for an database connection defined by the connection 
-            strings configuration section.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringSetting.ConnectionString">
-            <summary>
-            Gets the connection string for the represented <see cref="T:System.Configuration.ConnectionStringSettings"/> instance.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringSetting.ProviderName">
-            <summary>
-            Gets the provider name for the represented <see cref="T:System.Configuration.ConnectionStringSettings"/> instance.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.DbFunctions">
-            <summary>
-            Contains DB Functions methods for interacting DB
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.Load">
-            <summary>
-            Method for Load /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.AuthenticateUser(System.String,System.String)">
-            <summary>
-            Method for Authenticate User        /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetTimeSheetByUserwise(System.DateTime,System.DateTime,System.Int32)">
-            <summary>
-            Method for GetTimeSheetByUserwise          /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetTimeSheetByProjectwise(System.DateTime,System.DateTime,System.Int32)">
-            <summary>
-            Method for GetTimeSheetByProjectwise          /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-            
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetTimeSheetByProjectwise_Without_module(System.DateTime,System.DateTime,System.Int32,System.Int32)">
-            <summary>
-            Method for GetTimeSheetByProjectwise_Without_module          /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-            
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetTimeSheetByProject_USERwise(System.DateTime,System.DateTime,System.Int32,System.Int32)">
-            <summary>
-            Method for GetTimeSheetByProject_USERwise        /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-            
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetUserEfficacyReoprt(System.DateTime,System.DateTime,System.Int32)">
-            <summary>
-            Method for GetTimeSheetByProject_USERwise        /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-                  
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetUserProjectReport(System.DateTime,System.DateTime,System.Int32)">
-            <summary>
-            Method for GetUserProjectReport      /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-            
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetProjectUserwise(System.DateTime,System.DateTime,System.Int32)">
-            <summary>
-            Method for GetProjectUserwise      /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-                 
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.GetProjectModulewiseReport(System.DateTime,System.DateTime,System.Int32)">
-            <summary>
-            Method for GetProjectModulewiseReport      /// 
-            </summary>
-            <example>
-            <code>
-            Database dbSvc = DatabaseFactory.CreateDatabase();
-            </code>
-            </example>
-            <returns>Database</returns>
-            <exception cref="T:System.Configuration.ConfigurationException">
-            <para>An error occured while reading the configuration.</para>
-            </exception>
-            
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.Insert(System.String,System.String)">
-            <summary>
-            Inser Into Customer Table.
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.Update(System.String,System.String)">
-            <summary>
-            Inser Into Customer Table .
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.Delete(System.String)">
-            <summary>
-            Delete From Customer Table.
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.DbFunctions.ChangePassword(System.String,System.String)">
-            <summary>
-            Inser Into Customer Table .
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.OverrideWithGroupPoliciesForConfigurationSection(System.Configuration.ConnectionStringsSection,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey)">
-            <summary>
-            Overrides the <paramref name="configurationSection"/>'s properties with the Group Policy values from 
-            the registry.
-            </summary>
-            <param name="configurationSection">The configuration section that must be managed.</param>
-            <param name="policyKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.GenerateWmiObjectsForConfigurationSection(System.Configuration.ConnectionStringsSection,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
-            <summary>
-            Creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> instances that describe the <paramref name="configurationSection"/>.
-            </summary>
-            <param name="configurationSection">The configuration section that must be managed.</param>
-            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.OverrideWithGroupPoliciesAndGenerateWmiObjectsForConfigurationElements(System.Configuration.ConnectionStringsSection,System.Boolean,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,System.Boolean,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
-            <summary>
-            Overrides the <paramref name="configurationSection"/>'s configuration elements' properties 
-            with the Group Policy values from the registry, if any, and creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> 
-            instances that describe these configuration elements.
-            </summary>
-            <param name="configurationSection">The configuration section that must be managed.</param>
-            <param name="readGroupPolicies"><see langword="true"/> if Group Policy overrides must be applied; otherwise, 
-            <see langword="false"/>.</param>
-            <param name="machineKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
-            configuration section at the machine level, or <see langword="null"/> 
-            if there is no such registry key.</param>
-            <param name="userKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
-            configuration section at the user level, or <see langword="null"/> 
-            if there is no such registry key.</param>
-            <param name="generateWmiObjects"><see langword="true"/> if WMI objects must be generated; otherwise, 
-            <see langword="false"/>.</param>
-            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.SectionCategoryName">
-            <summary>
-            Gets the name of the category that represents the whole configuration section.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.SectionName">
-            <summary>
-            Gets the name of the managed configuration section.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Oracle.OracleDatabase">
-            <summary>
-            <para>Represents an Oracle database.</para>
-            </summary>
-            <remarks> 
-            <para>
-            Internally uses Oracle .NET Managed Provider from Microsoft (<see cref="N:System.Data.OracleClient"/>) to connect to a Oracle 9i database.
-            </para>  
-            <para>
-            When retrieving a result set, it will build the package name. The package name should be set based
-            on the stored procedure prefix and this should be set via configuration. For 
-            example, a package name should be set as prefix of "ENTLIB_" and package name of
-            "pkgENTLIB_ARCHITECTURE". For your applications, this is required only if you are defining your stored procedures returning 
-            ref cursors.
-            </para>
-            </remarks>
-        </member>
         <member name="M:NarolaInfotech.Data.Oracle.OracleDatabase.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.OracleDatabase"/> class with a connection string and a list of Oracle packages.
@@ -2264,6 +1174,22 @@
             <param name="adapter">The <see cref="T:System.Data.Common.DbDataAdapter"/> to set the event.</param>
             <remarks>The <see cref="T:System.Data.Common.DbDataAdapter"/> must be an <see cref="T:System.Data.OracleClient.OracleDataAdapter"/>.</remarks>
         </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider.commandExecuted"/> event.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs.#ctor(System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs"/> class.
+            </summary>
+            <param name="startTime">The time the command started its execution.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandExecutedEventArgs.StartTime">
+            <summary>
+            Gets the time the command started its execution.
+            </summary>
+        </member>
         <member name="T:NarolaInfotech.Data.DatabaseCustomFactory">
             <summary>
             This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
@@ -2295,19 +1221,152 @@
             <returns>A new instance of the appropriate subtype of <typeparamref name="Tobject"/>.</returns>
             <exception cref="T:System.Configuration.ConfigurationErrorsException">when the configuration is invalid or <paramref name="name"/> cannot be found.</exception>
         </member>
-        <member name="T:NarolaInfotech.Data.Sql.SqlDatabaseAssembler">
+        <member name="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLoggerCustomFactory">
             <summary>
-            Represents the process to build an instance of <see cref="T:NarolaInfotech.Data.Sql.SqlDatabase"/> described by configuration information.
+            This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
+            Represents the process to build a <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/> according to instrumentation configuration.
             </summary>
         </member>
-        <member name="M:NarolaInfotech.Data.Sql.SqlDatabaseAssembler.Assemble(System.String,System.Configuration.ConnectionStringSettings,NarolaInfotech.Common.Configuration.IConfigurationSource)">
+        <member name="M:NarolaInfotech.Data.Instrumentation.DefaultDataEventLoggerCustomFactory.DoCreateObject(NarolaInfotech.Common.Instrumentation.Configuration.InstrumentationConfigurationSection)">
             <summary>
-            Builds an instance of <see cref="T:NarolaInfotech.Data.Sql.SqlDatabase"/>, based on the provided connection string.
+            This method supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
+            Builds a <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/>.
             </summary>
-            <param name="name">The name for the new database instance.</param>
-            <param name="connectionStringSettings">The connection string for the new database instance.</param>
-            <param name="configurationSource">The source for any additional configuration information.</param>
-            <returns>The new sql database instance.</returns>
+            <param name="instrumentationConfigurationSection">The instrumentation section that is used as configuration.</param>
+            <returns>A fully initialized instance of <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/>.</returns>
+        </member>
+        <member name="T:NarolaInfotech.Data.DatabaseProviderFactory">
+            <summary>
+            <para>Represents a factory for creating named instances of <see cref="T:NarolaInfotech.Data.Database"/> objects.</para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.DatabaseProviderFactory.#ctor">
+            <summary>
+            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.DatabaseProviderFactory"/> class 
+            with the default configuration source.</para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.DatabaseProviderFactory.#ctor(NarolaInfotech.Common.Configuration.IConfigurationSource)">
+            <summary>
+            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.DatabaseProviderFactory"/> class 
+            with the given configuration source.</para>
+            </summary>
+            <param name="configurationSource">The source for configuration information.</param>
+        </member>
+        <member name="T:NarolaInfotech.Data.CachingMechanism">
+            <devdoc>
+            CachingMechanism provides caching support for stored procedure 
+            parameter discovery and caching
+            </devdoc>
+        </member>
+        <member name="M:NarolaInfotech.Data.CachingMechanism.CloneParameters(System.Data.IDataParameter[])">
+            <devdoc>
+            Create and return a copy of the IDataParameter array.
+            </devdoc>        
+        </member>
+        <member name="M:NarolaInfotech.Data.CachingMechanism.Clear">
+            <devdoc>
+            Empties all items from the cache
+            </devdoc>
+        </member>
+        <member name="M:NarolaInfotech.Data.CachingMechanism.AddParameterSetToCache(System.String,System.Data.IDbCommand,System.Data.IDataParameter[])">
+            <devdoc>
+            Add a parameter array to the cache for the command.
+            </devdoc>        
+        </member>
+        <member name="M:NarolaInfotech.Data.CachingMechanism.GetCachedParameterSet(System.String,System.Data.IDbCommand)">
+            <devdoc>
+            Gets a parameter array from the cache for the command. Returns null if no parameters are found.
+            </devdoc>        
+        </member>
+        <member name="M:NarolaInfotech.Data.CachingMechanism.IsParameterSetCached(System.String,System.Data.IDbCommand)">
+            <devdoc>
+            Gets if a given stored procedure on a specific connection string has a cached parameter set
+            </devdoc>        
+        </member>
+        <member name="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData">
+            <summary>
+            Oracle-specific connection information.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData"/> class with default values.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData.Packages">
+            <summary>
+            Gets a collection of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> objects.
+            </summary>
+            <value>
+            A collection of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> objects.
+            </value>
+        </member>
+        <member name="T:NarolaInfotech.Data.Configuration.DbProviderMapping">
+            <summary>
+            Represents the mapping from an ADO.NET provider to an Enterprise Library <see cref="T:NarolaInfotech.Data.Database"/>.
+            </summary>
+            <remarks>
+            <para>
+            The Enterprise Library Data Access Application Block leverages the ADO.NET 2.0 provider factories. To determine what type of <see cref="T:NarolaInfotech.Data.Database"/> matches a given provider factory type, the optional 
+            <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> configuration objects can be defined in the block's configuration section.
+            </para>
+            <para>
+            If a mapping is not present for a given provider type, sensible defaults will be used:
+            <list type="bullet">
+            <item>For provider name "System.Data.SqlClient", or for a provider of type <see cref="T:System.Data.SqlClient.SqlClientFactory"/>, the 
+            <see cref="T:NarolaInfotech.Data.Sql.SqlDatabase"/> will be used.</item>
+            <item>For provider name "System.Data.OracleClient", or for a provider of type <see cref="T:System.Data.OracleClient.OracleClientFactory"/>, the 
+            <see cref="T:NarolaInfotech.Data.Oracle.OracleDatabase"/> will be used.</item>
+            <item>In any other case, the <see cref="T:NarolaInfotech.Data.GenericDatabase"/> will be used.</item>
+            </list>
+            </para>
+            </remarks>
+            <seealso cref="M:NarolaInfotech.Data.DatabaseConfigurationView.GetProviderMapping(System.String,System.String)"/>
+            <seealso cref="T:System.Data.Common.DbProviderFactory"/>
+        </member>
+        <member name="F:NarolaInfotech.Data.Configuration.DbProviderMapping.DefaultSqlProviderName">
+            <summary>
+            Default name for the Sql managed provider.
+            </summary>
+        </member>
+        <member name="F:NarolaInfotech.Data.Configuration.DbProviderMapping.DefaultOracleProviderName">
+            <summary>
+            Default name for the Oracle managed provider.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.DbProviderMapping.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> class.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.DbProviderMapping.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> class with name and <see cref="T:NarolaInfotech.Data.Database"/> type.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.DbProviderMapping.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> class with name and fully qualified type name of the <see cref="T:NarolaInfotech.Data.Database"/> type.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.DbProviderMapping.DatabaseType">
+            <summary>
+            Gets or sets the type of database to use for the mapped ADO.NET provider.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.DbProviderMapping.DatabaseTypeName">
+            <summary>
+            Gets or sets the fully qualified type name of the database to use for the mapped ADO.NET provider.
+            </summary>
+            <value>
+            The fully qualified type name of the database to use for the mapped ADO.NET provider.
+            </value>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.DbProviderMapping.DbProviderName">
+            <summary>
+             Gets the logical name of the ADO.NET provider.
+            </summary>
         </member>
         <member name="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider">
             <summary>
@@ -2364,27 +1423,60 @@
             Occurs when the attempt to execute a database command by a <see cref="T:NarolaInfotech.Data.Database"/> instance fails.
             </summary>
         </member>
-        <member name="T:NarolaInfotech.Data.UpdateBehavior">
+        <member name="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger">
             <summary>
-            Used with the Database.UpdateDataSet method. Provides control over behavior when the Data
-            Adapter's update command encounters an error.
+            The instrumentation gateway when no instances of the objects from the block are involved.
             </summary>
         </member>
-        <member name="F:NarolaInfotech.Data.UpdateBehavior.Standard">
+        <member name="M:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger.#ctor(System.Boolean,System.Boolean)">
             <summary>
-            No interference with the DataAdapter's Update command. If Update encounters
-            an error, the update stops.  Additional rows in the Datatable are uneffected.
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger"/> class, specifying whether 
+            logging to the event log and firing WMI events is allowed.
+            </summary>
+            <param name="eventLoggingEnabled"><b>true</b> if writing to the event log is allowed, <b>false</b> otherwise.</param>
+            <param name="wmiEnabled"><b>true</b> if firing WMI events is allowed, <b>false</b> otherwise.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.DefaultDataEventLogger.LogConfigurationError(System.Exception,System.String)">
+            <summary>
+            Logs the occurrence of a configuration error for the Enterprise Library Data Access Application Block through the 
+            available instrumentation mechanisms.
+            </summary>
+            <param name="instanceName">Name of the <see cref="T:NarolaInfotech.Data.Database"/> instance in which the configuration error was detected.</param>
+            <param name="exception">The exception raised for the configuration error.</param>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.DataEvent">
+            <summary>
+            Base class for data WMI events.
             </summary>
         </member>
-        <member name="F:NarolaInfotech.Data.UpdateBehavior.Continue">
+        <member name="M:NarolaInfotech.Data.Instrumentation.DataEvent.#ctor(System.String)">
             <summary>
-            If the DataAdapter's Update command encounters an error, the update will
-            continue. The Update command will try to update the remaining rows. 
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DataEvent"/> class.
+            </summary>
+            <param name="instanceName">name of the <see cref="T:NarolaInfotech.Data.Database"/> this event applies on.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.DataEvent.InstanceName">
+            <summary>
+            Gets the name of the <see cref="T:NarolaInfotech.Data.Database"/> this event applies on.
             </summary>
         </member>
-        <member name="F:NarolaInfotech.Data.UpdateBehavior.Transactional">
+        <member name="T:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSetting">
             <summary>
-            If the DataAdapter encounters an error, all updated rows will be rolled back.
+            Represents the configuration information for an Oracle database connection defined by the Oracle
+            specific connection information configuration section.
+            </summary>
+            <remarks>
+            The collection of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> instances
+            defined by an instance of <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData"/>
+            is represented as a <see cref="T:System.String"/> array contaning key/value pairs.
+            </remarks>
+            <seealso cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/>
+            <seealso cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionData"/>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSetting.Packages">
+            <summary>
+            Gets the package mapping information specified by the represented Oracle connection data object as a
+            <see cref="T:System.String"/> array of key/value pairs.
             </summary>
         </member>
         <member name="T:NarolaInfotech.Data.Sql.SqlDatabase">
@@ -2595,46 +1687,19 @@
             <para>The '@' symbol.</para>
             </value>
         </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs">
+        <member name="T:NarolaInfotech.Data.Configuration.Manageability.DatabaseBlockSetting">
             <summary>
-            Provides data for the <see cref="E:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider.connectionFailed"/> event.
+            Represents the configuration information for the Database Application Block.
             </summary>
+            <seealso cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/>
         </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs.#ctor(System.String,System.Exception)">
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.DatabaseBlockSetting.DefaultDatabase">
             <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs"/> class.
+            Gets the name of the default database on the represented database configuration section.
             </summary>
-            <param name="connectionString">The connection string that caused the failed connection, with credentials removed.</param>
-            <param name="exception">The exception thrown when the connection failed.</param>
+            <seealso cref="P:NarolaInfotech.Data.Configuration.DatabaseSettings.DefaultDatabase">DatabaseSettings.DefaultDatabase</seealso>
         </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs.ConnectionString">
-            <summary>
-            Gets the connection string that caused the failed connection, with credentials removed.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs.Exception">
-            <summary>
-            Gets the exception thrown when the connection failed.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.DatabaseMapper">
-            <summary>
-            This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
-            Resolves default names for databases.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.DatabaseMapper.MapName(System.String,NarolaInfotech.Common.Configuration.IConfigurationSource)">
-            <summary>
-            This method supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
-            Returns the default database name from the configuration in the <paramref name="configSource"/>, if the
-            value for <paramref name="name"/> is <see langword="null"/> (<b>Nothing</b> in Visual Basic).
-            </summary>
-            <param name="name">The current name.</param>
-            <param name="configSource">The source for configuration information.</param>
-            <returns>The default database name if <paramref name="name"/> is <see langword="null"/> (<b>Nothing</b> in Visual Basic),
-            otherwise the original value for <b>name</b>.</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.OverrideWithGroupPoliciesForConfigurationSection(NarolaInfotech.Data.Configuration.DatabaseSettings,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey)">
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.OverrideWithGroupPoliciesForConfigurationSection(System.Configuration.ConnectionStringsSection,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey)">
             <summary>
             Overrides the <paramref name="configurationSection"/>'s properties with the Group Policy values from 
             the registry.
@@ -2642,14 +1707,14 @@
             <param name="configurationSection">The configuration section that must be managed.</param>
             <param name="policyKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides.</param>
         </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.GenerateWmiObjectsForConfigurationSection(NarolaInfotech.Data.Configuration.DatabaseSettings,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.GenerateWmiObjectsForConfigurationSection(System.Configuration.ConnectionStringsSection,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
             <summary>
             Creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> instances that describe the <paramref name="configurationSection"/>.
             </summary>
             <param name="configurationSection">The configuration section that must be managed.</param>
             <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
         </member>
-        <member name="M:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.OverrideWithGroupPoliciesAndGenerateWmiObjectsForConfigurationElements(NarolaInfotech.Data.Configuration.DatabaseSettings,System.Boolean,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,System.Boolean,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.OverrideWithGroupPoliciesAndGenerateWmiObjectsForConfigurationElements(System.Configuration.ConnectionStringsSection,System.Boolean,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,System.Boolean,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
             <summary>
             Overrides the <paramref name="configurationSection"/>'s configuration elements' properties 
             with the Group Policy values from the registry, if any, and creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> 
@@ -2668,14 +1733,83 @@
             <see langword="false"/>.</param>
             <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
         </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.SectionCategoryName">
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.SectionCategoryName">
             <summary>
             Gets the name of the category that represents the whole configuration section.
             </summary>
         </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.SectionName">
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringsManageabilityProvider.SectionName">
             <summary>
             Gets the name of the managed configuration section.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringSetting">
+            <summary>
+            Represents the configuration information for an database connection defined by the connection 
+            strings configuration section.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringSetting.ConnectionString">
+            <summary>
+            Gets the connection string for the represented <see cref="T:System.Configuration.ConnectionStringSettings"/> instance.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ConnectionStringSetting.ProviderName">
+            <summary>
+            Gets the provider name for the represented <see cref="T:System.Configuration.ConnectionStringSettings"/> instance.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.TransactionScopeConnections">
+            <summary>
+            	This class manages the connections that will be used when transactions are active
+            	as a result of instantiating a <see cref="T:System.Transactions.TransactionScope"/>. When a transaction
+            	is active, all database access must be through this single connection unless you want
+            	to use a distributed transaction, which is an expensive operation.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.TransactionScopeConnections.GetConnection(NarolaInfotech.Data.Database)">
+            <summary>
+            	Returns a connection for the current transaction. This will be an existing <see cref="T:System.Data.Common.DbConnection"/>
+            	instance or a new one if there is a <see cref="T:System.Transactions.TransactionScope"/> active. Otherwise this method
+            	returns null.
+            </summary>
+            <param name="db"></param>
+            <returns>Either a <see cref="T:System.Data.Common.DbConnection"/> instance or null.</returns>
+        </member>
+        <member name="M:NarolaInfotech.Data.TransactionScopeConnections.OnTransactionCompleted(System.Object,System.Transactions.TransactionEventArgs)">
+            <summary>
+            	This event handler is called whenever a transaction is about to be disposed, which allows
+            	us to remove the transaction from our list and dispose the connection instance we created.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings">
+            <summary>
+            Oracle-specific configuration section.
+            </summary>
+        </member>
+        <member name="F:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.SectionName">
+            <summary>
+            The section name for the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/>.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/> class with default values.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.GetSettings(NarolaInfotech.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Retrieves the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings"/> from the configuration source.
+            </summary>
+            <param name="configurationSource">The configuration source to retrieve the configuration from.</param>
+            <returns>The configuration section, or <see langword="null"/> (<b>Nothing</b> in Visual Basic) 
+            if not present in the configuration source.</returns>
+        </member>
+        <member name="P:NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings.OracleConnectionsData">
+            <summary>
+            Collection of Oracle-specific connection information.
             </summary>
         </member>
         <member name="T:NarolaInfotech.Data.DatabaseFactory">
@@ -2721,81 +1855,61 @@
             <para>The constructor being called throws an exception.</para>
             </exception>
         </member>
-        <member name="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData">
+        <member name="T:NarolaInfotech.Data.DatabaseConfigurationView">
             <summary>
-            <para>Represents the package information to use when calling a stored procedure for Oracle.</para>
+            <para>Represents a view for navigating the <see cref="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings"/> configuration data.</para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.DatabaseConfigurationView.#ctor(NarolaInfotech.Common.Configuration.IConfigurationSource)">
+            <summary>
+            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.DatabaseConfigurationView"/> class with an <see cref="T:NarolaInfotech.Common.Configuration.IConfigurationSource"/> object.</para>
+            </summary>
+            <param name="configurationSource">
+            <para>A <see cref="T:NarolaInfotech.Common.Configuration.IConfigurationSource"/> object.</para>
+            </param>
+        </member>
+        <member name="M:NarolaInfotech.Data.DatabaseConfigurationView.GetConnectionStringSettings(System.String)">
+            <summary>
+            Returns the <see cref="T:System.Configuration.ConnectionStringSettings"/> object with the given name from the connection strings
+            configuration section in the receiver's configuration source.
             </summary>
             <remarks>
-            <para>
-            A package name can be appended to the stored procedure name of a command if the prefix of the stored procedure
-            matchs the prefix defined. This allows the caller of the stored procedure to use stored procedures
-            in a more database independent fashion.
-            </para>
+            The connection string will be retrieved from the configuration source if it contains the connection strings section,
+            otherwise it will be retrieved from the default configuration file.
             </remarks>
+            <param name="name">The name for the desired connection string configuration.</param>
+            <returns>The connection string configuration.</returns>
+            <exception cref="T:System.ArgumentException">if <paramref name="name"/> is <see langword="null"/> (<b>Nothing</b> in Visual Basic) or empty.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException">if the connection string object is not found, or if it does not specify a provider name.</exception>
         </member>
-        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData.#ctor">
+        <member name="M:NarolaInfotech.Data.DatabaseConfigurationView.GetProviderMapping(System.String,System.String)">
             <summary>
-            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> class.</para>
+            Returns the <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> that specifies the mapping between an ADO.NET provider factory and a
+            <see cref="T:NarolaInfotech.Data.Database"/> instance.
             </summary>
+            <remarks>
+            The mapping based in logical names will be probed first. If there is no success, the default type based mappings
+            will be considered. If no default mapping is defined for the provider factory type, the generic database will be used.
+            </remarks>
+            <param name="name">The name of the <see cref="T:NarolaInfotech.Data.Database"/> instance.</param>
+            <param name="dbProviderName">The logical provider name.</param>
+            <returns>The <see cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/> that matches the <paramref name="dbProviderName"/>.</returns>
         </member>
-        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData.#ctor(System.String,System.String)">
+        <member name="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings">
             <summary>
-            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> class, given the prefix to search for and the name of the package.</para>
+            <para>Gets the <see cref="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings"/> configuration data.</para>
             </summary>
-            <param name="name">
-            <para>The name of the package to append to any found procedure that has the <paramref name="prefix"/>.</para>
-            </param>
-            <param name="prefix">
-            <para>The prefix of the stored procedures used in this package.</para>
-            </param>
+            <returns>
+            <para>The <see cref="P:NarolaInfotech.Data.DatabaseConfigurationView.DatabaseSettings"/> configuration data.</para>
+            </returns>
         </member>
-        <member name="P:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData.Prefix">
+        <member name="P:NarolaInfotech.Data.DatabaseConfigurationView.DefaultName">
             <summary>
-            <para>Gets or sets the prefix of the stored procedures that are in the package in Oracle.</para>
+            <para>Gets the name of the default configured <see cref="T:NarolaInfotech.Data.Database"/>.</para>
             </summary>
-            <value>
-            <para>The prefix of the stored procedures that are in the package in Oracle.</para>
-            </value>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.Manageability.Installer">
-            <summary>
-            Installer for the WMI objects defined in the assembly.
-            </summary>
-        </member>
-        <member name="T:NarolaInfotech.Data.Configuration.Manageability.DatabaseBlockSetting">
-            <summary>
-            Represents the configuration information for the Database Application Block.
-            </summary>
-            <seealso cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/>
-        </member>
-        <member name="P:NarolaInfotech.Data.Configuration.Manageability.DatabaseBlockSetting.DefaultDatabase">
-            <summary>
-            Gets the name of the default database on the represented database configuration section.
-            </summary>
-            <seealso cref="P:NarolaInfotech.Data.Configuration.DatabaseSettings.DefaultDatabase">DatabaseSettings.DefaultDatabase</seealso>
-        </member>
-        <member name="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent">
-            <summary>
-            Represents the WMI event fired when a connection failed to be established.
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent.#ctor(System.String,System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent"/> class.
-            </summary>
-            <param name="instanceName">The name of the <see cref="T:NarolaInfotech.Data.Database"/> instance that tried to establish the failed the connection.</param>
-            <param name="connectionString">The connection string that caused the failed connection, with credentials removed.</param>
-            <param name="exceptionMessage">The message that describes the exception thrown when the connection failed.</param>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent.ConnectionString">
-            <summary>
-            Gets the connection string that caused the failed connection, with credentials removed.
-            </summary>
-        </member>
-        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent.ExceptionMessage">
-            <summary>
-            Gets the message that describes the exception thrown when the connection failed.
-            </summary>
+            <returns>
+            <para>The name of the default configured <see cref="T:NarolaInfotech.Data.Database"/>.</para>
+            </returns>
         </member>
         <member name="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationListener">
             <summary>
@@ -2879,6 +1993,740 @@
             </summary>
             <param name="instanceNames">The instance names for the performance counters.</param>
         </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller">
+            <summary>
+            Represents the installer for the instrumentation events. Not intended for direct use.
+            </summary>
+        </member>
+        <member name="F:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationInstaller"/> class.
+            Lets the system know that the InstallUtil.exe tool will be run against this assembly
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider.connectionFailed"/> event.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs"/> class.
+            </summary>
+            <param name="connectionString">The connection string that caused the failed connection, with credentials removed.</param>
+            <param name="exception">The exception thrown when the connection failed.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs.ConnectionString">
+            <summary>
+            Gets the connection string that caused the failed connection, with credentials removed.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEventArgs.Exception">
+            <summary>
+            Gets the exception thrown when the connection failed.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent">
+            <summary>
+            Represents the WMI event fired when a connection failed to be established.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent"/> class.
+            </summary>
+            <param name="instanceName">The name of the <see cref="T:NarolaInfotech.Data.Database"/> instance that tried to establish the failed the connection.</param>
+            <param name="connectionString">The connection string that caused the failed connection, with credentials removed.</param>
+            <param name="exceptionMessage">The message that describes the exception thrown when the connection failed.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent.ConnectionString">
+            <summary>
+            Gets the connection string that caused the failed connection, with credentials removed.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.ConnectionFailedEvent.ExceptionMessage">
+            <summary>
+            Gets the message that describes the exception thrown when the connection failed.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Configuration.Manageability.Installer">
+            <summary>
+            Installer for the WMI objects defined in the assembly.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.UpdateBehavior">
+            <summary>
+            Used with the Database.UpdateDataSet method. Provides control over behavior when the Data
+            Adapter's update command encounters an error.
+            </summary>
+        </member>
+        <member name="F:NarolaInfotech.Data.UpdateBehavior.Standard">
+            <summary>
+            No interference with the DataAdapter's Update command. If Update encounters
+            an error, the update stops.  Additional rows in the Datatable are uneffected.
+            </summary>
+        </member>
+        <member name="F:NarolaInfotech.Data.UpdateBehavior.Continue">
+            <summary>
+            If the DataAdapter's Update command encounters an error, the update will
+            continue. The Update command will try to update the remaining rows. 
+            </summary>
+        </member>
+        <member name="F:NarolaInfotech.Data.UpdateBehavior.Transactional">
+            <summary>
+            If the DataAdapter encounters an error, all updated rows will be rolled back.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper">
+            <devdoc>
+            A wrapper to convert data for oracle for the reader.
+            </devdoc>
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper.GetBoolean(System.Int32)">
+            <devdoc>
+            Bit data type is mapped to a number in Oracle database. When reading bit data from Oracle database,
+            it will map to 0 as false and everything else as true.  This method uses System.Convert.ToBoolean() method
+            for type conversions.
+            </devdoc>        
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper.GetFloat(System.Int32)">
+            <devdoc>
+            When reading number from Oracle, data reader gets it back at decimal regardless of data type in
+            Oracle database. This will cast the result to float data type.
+            </devdoc>        
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper.GetGuid(System.Int32)">
+            <devdoc>
+            This method will cast the result data Guid data type. In Oracle you must use that as Raw(16) so
+            that this method can convert that to Guid properly.
+            </devdoc>        
+        </member>
+        <member name="T:NarolaInfotech.Data.DatabaseMapper">
+            <summary>
+            This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
+            Resolves default names for databases.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.DatabaseMapper.MapName(System.String,NarolaInfotech.Common.Configuration.IConfigurationSource)">
+            <summary>
+            This method supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
+            Returns the default database name from the configuration in the <paramref name="configSource"/>, if the
+            value for <paramref name="name"/> is <see langword="null"/> (<b>Nothing</b> in Visual Basic).
+            </summary>
+            <param name="name">The current name.</param>
+            <param name="configSource">The source for configuration information.</param>
+            <returns>The default database name if <paramref name="name"/> is <see langword="null"/> (<b>Nothing</b> in Visual Basic),
+            otherwise the original value for <b>name</b>.</returns>
+        </member>
+        <member name="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData">
+            <summary>
+            <para>Represents the package information to use when calling a stored procedure for Oracle.</para>
+            </summary>
+            <remarks>
+            <para>
+            A package name can be appended to the stored procedure name of a command if the prefix of the stored procedure
+            matchs the prefix defined. This allows the caller of the stored procedure to use stored procedures
+            in a more database independent fashion.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:NarolaInfotech.Data.Oracle.IOraclePackage">
+            <summary>
+            Represents the description of an oracle package mapping.
+            </summary>
+            <remarks>
+            <see cref="T:NarolaInfotech.Data.Oracle.IOraclePackage"/> is used to specify how to transform store procedure names 
+            into package qualified Oracle stored procedure names.
+            </remarks>
+            <seealso cref="T:NarolaInfotech.Data.Oracle.OracleDatabase"/>
+        </member>
+        <member name="P:NarolaInfotech.Data.Oracle.IOraclePackage.Name">
+            <summary>
+            When implemented by a class, gets the name of the package.
+            </summary>
+            <value>
+            The name of the package.
+            </value>
+        </member>
+        <member name="P:NarolaInfotech.Data.Oracle.IOraclePackage.Prefix">
+            <summary>
+            When implemented by a class, gets the prefix for the package.
+            </summary>
+            <value>
+            The prefix for the package.
+            </value>
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData.#ctor">
+            <summary>
+            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> class.</para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData.#ctor(System.String,System.String)">
+            <summary>
+            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData"/> class, given the prefix to search for and the name of the package.</para>
+            </summary>
+            <param name="name">
+            <para>The name of the package to append to any found procedure that has the <paramref name="prefix"/>.</para>
+            </param>
+            <param name="prefix">
+            <para>The prefix of the stored procedures used in this package.</para>
+            </param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Oracle.Configuration.OraclePackageData.Prefix">
+            <summary>
+            <para>Gets or sets the prefix of the stored procedures that are in the package in Oracle.</para>
+            </summary>
+            <value>
+            <para>The prefix of the stored procedures that are in the package in Oracle.</para>
+            </value>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent">
+            <summary>
+            Represents the WMI event fired when an error in the configuration for the data access block is detected.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent"/> class.
+            </summary>
+            <param name="instanceName">Name of the <see cref="T:NarolaInfotech.Data.Database"/> instance the failure ocurred in.</param>
+            <param name="exceptionMessage">The message that represents the exception thrown when the configuration error was detected.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.DataConfigurationFailureEvent.ExceptionMessage">
+            <summary>
+            Gets the message that represents the exception thrown when the configuration error was detected.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.OverrideWithGroupPoliciesForConfigurationSection(NarolaInfotech.Data.Configuration.DatabaseSettings,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey)">
+            <summary>
+            Overrides the <paramref name="configurationSection"/>'s properties with the Group Policy values from 
+            the registry.
+            </summary>
+            <param name="configurationSection">The configuration section that must be managed.</param>
+            <param name="policyKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.GenerateWmiObjectsForConfigurationSection(NarolaInfotech.Data.Configuration.DatabaseSettings,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
+            <summary>
+            Creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> instances that describe the <paramref name="configurationSection"/>.
+            </summary>
+            <param name="configurationSection">The configuration section that must be managed.</param>
+            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.OverrideWithGroupPoliciesAndGenerateWmiObjectsForConfigurationElements(NarolaInfotech.Data.Configuration.DatabaseSettings,System.Boolean,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,System.Boolean,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
+            <summary>
+            Overrides the <paramref name="configurationSection"/>'s configuration elements' properties 
+            with the Group Policy values from the registry, if any, and creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> 
+            instances that describe these configuration elements.
+            </summary>
+            <param name="configurationSection">The configuration section that must be managed.</param>
+            <param name="readGroupPolicies"><see langword="true"/> if Group Policy overrides must be applied; otherwise, 
+            <see langword="false"/>.</param>
+            <param name="machineKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
+            configuration section at the machine level, or <see langword="null"/> 
+            if there is no such registry key.</param>
+            <param name="userKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
+            configuration section at the user level, or <see langword="null"/> 
+            if there is no such registry key.</param>
+            <param name="generateWmiObjects"><see langword="true"/> if WMI objects must be generated; otherwise, 
+            <see langword="false"/>.</param>
+            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.SectionCategoryName">
+            <summary>
+            Gets the name of the category that represents the whole configuration section.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.DatabaseSettingsManageabilityProvider.SectionName">
+            <summary>
+            Gets the name of the managed configuration section.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Sql.SqlDatabaseAssembler">
+            <summary>
+            Represents the process to build an instance of <see cref="T:NarolaInfotech.Data.Sql.SqlDatabase"/> described by configuration information.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Sql.SqlDatabaseAssembler.Assemble(System.String,System.Configuration.ConnectionStringSettings,NarolaInfotech.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Builds an instance of <see cref="T:NarolaInfotech.Data.Sql.SqlDatabase"/>, based on the provided connection string.
+            </summary>
+            <param name="name">The name for the new database instance.</param>
+            <param name="connectionStringSettings">The connection string for the new database instance.</param>
+            <param name="configurationSource">The source for any additional configuration information.</param>
+            <returns>The new sql database instance.</returns>
+        </member>
+        <member name="T:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringConnectionStringPartName">
+            <summary>
+              Looks up a localized string similar to Connection string.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringPolicyNameTemplate">
+            <summary>
+              Looks up a localized string similar to Specify settings for connection &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringProviderNamePartName">
+            <summary>
+              Looks up a localized string similar to Provider name.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ConnectionStringsCategoryName">
+            <summary>
+              Looks up a localized string similar to Connection strings.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.DatabaseCategoryName">
+            <summary>
+              Looks up a localized string similar to Database.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.DatabaseSettingsDefaultDatabasePartName">
+            <summary>
+              Looks up a localized string similar to Default database.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.DatabaseSettingsPolicyName">
+            <summary>
+              Looks up a localized string similar to Specify Database Block Settings.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.OracleConnectionPackagesPartName">
+            <summary>
+              Looks up a localized string similar to Package mappings.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.OracleConnectionPolicyNameTemplate">
+            <summary>
+              Looks up a localized string similar to Specify settings for oracle connection &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.OracleConnectionsCategoryName">
+            <summary>
+              Looks up a localized string similar to Oracle packages.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ProviderMappingDatabaseTypePartName">
+            <summary>
+              Looks up a localized string similar to Database type.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ProviderMappingPolicyNameTemplate">
+            <summary>
+              Looks up a localized string similar to Specify settings for provider &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.ProviderMappingsCategoryName">
+            <summary>
+              Looks up a localized string similar to Provider mappings.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Configuration.DatabaseSettings">
+            <summary>
+            <para>Represents the root configuration for data.</para>
+            </summary>
+            <remarks>
+            <para>The class maps to the <c>databaseSettings</c> element in configuration.</para>
+            </remarks>
+        </member>
+        <member name="F:NarolaInfotech.Data.Configuration.DatabaseSettings.SectionName">
+            <summary>
+            The name of the data configuration section.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.DatabaseSettings.#ctor">
+            <summary>
+            <para>Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/> class.</para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.DatabaseSettings.GetDatabaseSettings(NarolaInfotech.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Retrieves the <see cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/> from a configuration source.
+            </summary>
+            <param name="configurationSource">The <see cref="T:NarolaInfotech.Common.Configuration.IConfigurationSource"/> to query for the database settings.</param>
+            <returns>The database settings from the configuration source, or <see langword="null"/> (<b>Nothing</b> in Visual Basic) if the 
+            configuration source does not contain database settings.</returns>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.DatabaseSettings.DefaultDatabase">
+            <summary>
+            <para>Gets or sets the default database instance name.</para>
+            </summary>
+            <value>
+            <para>The default database instance name.</para>
+            </value>
+            <remarks>
+            <para>This property maps to the <c>defaultInstance</c> element in configuration.</para>
+            </remarks>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.DatabaseSettings.ProviderMappings">
+            <summary>
+            Holds the optional mappings from ADO.NET's database providers to Enterprise Library's database types.
+            </summary>
+            <seealso cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/>
+        </member>
+        <member name="T:NarolaInfotech.Data.GenericDatabase">
+            <summary>
+            The <see cref="T:NarolaInfotech.Data.GenericDatabase"/> is used when no specific behavior is required or known for a database.
+            </summary>
+            <remarks>
+            This database exposes the <see cref="T:System.Data.Common.DbProviderFactory"/> used to allow for a provider 
+            agnostic programming model.
+            </remarks>
+        </member>
+        <member name="M:NarolaInfotech.Data.GenericDatabase.#ctor(System.String,System.Data.Common.DbProviderFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.GenericDatabase"/> class with a connection string and 
+            a provider factory.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+            <param name="dbProviderFactory">The provider factory.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.GenericDatabase.DeriveParameters(System.Data.Common.DbCommand)">
+            <summary>
+            This operation is not supported in this class.
+            </summary>
+            <param name="discoveryCommand">The <see cref="T:System.Data.Common.DbCommand"/> to do the discovery.</param>
+            <remarks>There is no generic way to do it, the operation is not implemented for <see cref="T:NarolaInfotech.Data.GenericDatabase"/>.</remarks>
+            <exception cref="T:System.NotSupportedException">Thrown whenever this method is called.</exception>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.CommandFailedEvent">
+            <summary>
+            Represents the WMI event fired when a command failed during its execution.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.CommandFailedEvent"/> class.
+            </summary>
+            <param name="instanceName">The name of the <see cref="T:NarolaInfotech.Data.Database"/> instance that executed the failed command.</param>
+            <param name="connectionString">The connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.</param>
+            <param name="commandText">The text of the command that failed its execution.</param>
+            <param name="exceptionMessage">The message that describes the exception thrown when the command failed.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.CommandText">
+            <summary>
+            Gets the text of the command that failed its execution.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.ConnectionString">
+            <summary>
+            Gets the connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEvent.ExceptionMessage">
+            <summary>
+            Gets the message that describes the exception thrown when the command failed.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Configuration.Manageability.ProviderMappingSetting">
+            <summary>
+            Represents the configuration information for a provider mapping defined by the Database Application Block
+            configuration section.
+            </summary>
+            <seealso cref="T:NarolaInfotech.Data.Configuration.DatabaseSettings"/>
+            <seealso cref="T:NarolaInfotech.Data.Configuration.DbProviderMapping"/>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.ProviderMappingSetting.DatabaseType">
+            <summary>
+            Gets the type of the database to which the represented database mapping 
+            maps its provider name.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.BlockName">
+            <summary>
+              Looks up a localized string similar to Enterprise Library Data Access Application Block.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.CommandExecutedCounterHelpResource">
+            <summary>
+              Looks up a localized string similar to Commands Executed/sec is the rate at which database commands were executed..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.CommandFailedCounterHelpResource">
+            <summary>
+              Looks up a localized string similar to Commands Failed/sec is tha rate at which database commands failed to execute..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ConfigurationFailureCreatingDatabase">
+            <summary>
+              Looks up a localized string similar to A configuration failure occurred while creating database ‘{0}’..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ConnectionFailedCounterHelpResource">
+            <summary>
+              Looks up a localized string similar to Connections Failed/sec is the rate at which database connections failed to open..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ConnectionOpenedCounterHelpResource">
+            <summary>
+              Looks up a localized string similar to Connections Opened/sec is the rate at which database connections were opened..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.CounterCategoryHelpResourceName">
+            <summary>
+              Looks up a localized string similar to Enterprise Library Data Performance Counter Instances.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ErrorConnectionFailedExtraInformation">
+            <summary>
+              Looks up a localized string similar to The connection string used was &quot;{0}&quot;..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ErrorConnectionFailedMessage">
+            <summary>
+              Looks up a localized string similar to The error occurred using the &quot;{0}&quot; database instance while attempting to open the database connection..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionCommandNotSqlCommand">
+            <summary>
+              Looks up a localized string similar to The command must be a SqlCommand..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionDatabaseTypeDoesNotHaveAssemblerAttribute">
+            <summary>
+              Looks up a localized string similar to The database type {0} for the name {1} does not have the required [DatabaseAssembler] attribute required to build the database object..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionDatabaseTypeDoesNotHaveRequiredConfigurationTypeAttribute">
+            <summary>
+              Looks up a localized string similar to The database type {0} does not have the required ConfigurationElementType attribute..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionMessageParameterMatchFailure">
+            <summary>
+              Looks up a localized string similar to The number of parameters does not match number of values for stored procedure..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionMessageUpdateDataSetArgumentFailure">
+            <summary>
+              Looks up a localized string similar to At least one command must be initialized.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionMessageUpdateDataSetRowFailure">
+            <summary>
+              Looks up a localized string similar to Failed to update row .
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionNoDatabaseDefined">
+            <summary>
+              Looks up a localized string similar to The requested database {0} is not defined in configuration..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionNoProviderDefinedForConnectionString">
+            <summary>
+              Looks up a localized string similar to The requested database {0} does not have provider name set in the connection string..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionNullOrEmptyString">
+            <summary>
+              Looks up a localized string similar to The value can not be null or an empty string..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionParameterDiscoveryNotSupportedOnGenericDatabase">
+            <summary>
+              Looks up a localized string similar to Parameter discovery is not supported for connections using GenericDatabase. You must specify the parameters explicitly, or configure the connection to use a type deriving from Database that supports parameter discovery..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionTableNameArrayEmpty">
+            <summary>
+              Looks up a localized string similar to The table name array used to map results to user-specified table names cannot be empty..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.ExceptionTypeNotDatabaseAssembler">
+            <summary>
+              Looks up a localized string similar to Type {0} is not an implementation of IDatabaseAssembler for DatabaseAssemblerAttribute..
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.Password">
+            <summary>
+              Looks up a localized string similar to password=,pwd=.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Properties.Resources.UserName">
+            <summary>
+              Looks up a localized string similar to user id=,uid=.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationListenerBinder">
+            <summary>
+            This type supports the Enterprise Library infrastructure and is not intended to be used directly from your code.
+            Explicit binder for data access instrumentation.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.DataInstrumentationListenerBinder.Bind(System.Object,System.Object)">
+            <summary>
+            Binds the events exposed by the source to the handlers in the listener.
+            </summary>
+            <param name="source">The source of instrumentation events. Must be an instance of <see cref="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider"/>.</param>
+            <param name="listener">The listener for instrumentation events. Must be an instance of <see cref="T:NarolaInfotech.Data.Instrumentation.DataInstrumentationListener"/>.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.OverrideWithGroupPoliciesForConfigurationSection(NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey)">
+            <summary>
+            Overrides the <paramref name="configurationSection"/>'s properties with the Group Policy values from 
+            the registry.
+            </summary>
+            <param name="configurationSection">The configuration section that must be managed.</param>
+            <param name="policyKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.GenerateWmiObjectsForConfigurationSection(NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
+            <summary>
+            Creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> instances that describe the <paramref name="configurationSection"/>.
+            </summary>
+            <param name="configurationSection">The configuration section that must be managed.</param>
+            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.OverrideWithGroupPoliciesAndGenerateWmiObjectsForConfigurationElements(NarolaInfotech.Data.Oracle.Configuration.OracleConnectionSettings,System.Boolean,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,NarolaInfotech.Common.Configuration.Manageability.IRegistryKey,System.Boolean,System.Collections.Generic.ICollection{NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting})">
+            <summary>
+            Overrides the <paramref name="configurationSection"/>'s configuration elements' properties 
+            with the Group Policy values from the registry, if any, and creates the <see cref="T:NarolaInfotech.Common.Configuration.Manageability.ConfigurationSetting"/> 
+            instances that describe these configuration elements.
+            </summary>
+            <param name="configurationSection">The configuration section that must be managed.</param>
+            <param name="readGroupPolicies"><see langword="true"/> if Group Policy overrides must be applied; otherwise, 
+            <see langword="false"/>.</param>
+            <param name="machineKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
+            configuration section at the machine level, or <see langword="null"/> 
+            if there is no such registry key.</param>
+            <param name="userKey">The <see cref="T:NarolaInfotech.Common.Configuration.Manageability.IRegistryKey"/> which holds the Group Policy overrides for the 
+            configuration section at the user level, or <see langword="null"/> 
+            if there is no such registry key.</param>
+            <param name="generateWmiObjects"><see langword="true"/> if WMI objects must be generated; otherwise, 
+            <see langword="false"/>.</param>
+            <param name="wmiSettings">A collection to where the generated WMI objects are to be added.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.SectionCategoryName">
+            <summary>
+            Gets the name of the category that represents the whole configuration section.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Configuration.Manageability.OracleConnectionSettingsManageabilityProvider.SectionName">
+            <summary>
+            Gets the name of the managed configuration section.
+            </summary>
+        </member>
+        <member name="T:NarolaInfotech.Data.ParameterCache">
+            <summary>
+            <para>
+            Provides parameter caching services for dynamic parameter discovery of stored procedures.
+            Eliminates the round-trip to the database to derive the parameters and types when a command
+            is executed more than once.
+            </para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.ParameterCache.SetParameters(System.Data.Common.DbCommand,NarolaInfotech.Data.Database)">
+            <summary>
+            <para>
+            Populates the parameter collection for a command wrapper from the cache 
+            or performs a round-trip to the database to query the parameters.
+            </para>
+            </summary>
+            <param name="command">
+            <para>The command to add the parameters.</para>
+            </param>
+            <param name="database">
+            <para>The database to use to set the parameters.</para>
+            </param>
+        </member>
+        <member name="M:NarolaInfotech.Data.ParameterCache.Clear">
+            <summary>
+            <para>Empties the parameter cache.</para>
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.ParameterCache.AddParametersFromCache(System.Data.Common.DbCommand,NarolaInfotech.Data.Database)">
+            <summary>
+            <para>Adds parameters to a command using the cache.</para>
+            </summary>
+            <param name="command">
+            <para>The command to add the parameters.</para>
+            </param>
+            <param name="database">The database to use.</param>
+        </member>
+        <member name="M:NarolaInfotech.Data.ParameterCache.AlreadyCached(System.Data.IDbCommand,NarolaInfotech.Data.Database)">
+            <summary>
+            <para>Checks to see if a cache entry exists for a specific command on a specific connection</para>
+            </summary>
+            <param name="command">
+            <para>The command to check.</para>
+            </param>
+            <param name="database">The database to check.</param>
+            <returns>True if the parameters are already cached for the provided command, false otherwise</returns>
+        </member>
+        <member name="T:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:NarolaInfotech.Data.Instrumentation.DataInstrumentationProvider.commandFailed"/> event.
+            </summary>
+        </member>
+        <member name="M:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.#ctor(System.String,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs"/> class.
+            </summary>
+            <param name="commandText">The text of the command that failed its execution.</param>
+            <param name="connectionString">The connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.</param>
+            <param name="exception">The exception thrown when the command failed.</param>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.CommandText">
+            <summary>
+            Gets the text of the command that failed its execution.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.ConnectionString">
+            <summary>
+            Gets the connection string of the <see cref="T:NarolaInfotech.Data.Database"/> that executed the failed command, with credentials removed.
+            </summary>
+        </member>
+        <member name="P:NarolaInfotech.Data.Instrumentation.CommandFailedEventArgs.Exception">
+            <summary>
+            Gets the exception thrown when the command failed.
+            </summary>
+        </member>
         <member name="T:NarolaInfotech.Data.ConnectionString">
             <summary>
             ConnectionString class constructs a connection string by 
@@ -2924,88 +2772,6 @@
             <devdoc>
             User password for the connection string.
             </devdoc>
-        </member>
-        <member name="T:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper">
-            <devdoc>
-            A wrapper to convert data for oracle for the reader.
-            </devdoc>
-        </member>
-        <member name="M:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper.GetBoolean(System.Int32)">
-            <devdoc>
-            Bit data type is mapped to a number in Oracle database. When reading bit data from Oracle database,
-            it will map to 0 as false and everything else as true.  This method uses System.Convert.ToBoolean() method
-            for type conversions.
-            </devdoc>        
-        </member>
-        <member name="M:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper.GetFloat(System.Int32)">
-            <devdoc>
-            When reading number from Oracle, data reader gets it back at decimal regardless of data type in
-            Oracle database. This will cast the result to float data type.
-            </devdoc>        
-        </member>
-        <member name="M:NarolaInfotech.Data.Oracle.OracleDataReaderWrapper.GetGuid(System.Int32)">
-            <devdoc>
-            This method will cast the result data Guid data type. In Oracle you must use that as Raw(16) so
-            that this method can convert that to Guid properly.
-            </devdoc>        
-        </member>
-        <member name="F:NarolaInfotech.Data.TimeSeetDetail.f_nmTimeSheetDetail">
-            <summary>
-            Get - Set Properties. 
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.TimeSeetDetail.Init(System.Data.DataSet)">
-            <summary>
-            Initialization
-            </summary>
-            <param name="ds"></param>
-        </member>
-        <member name="M:NarolaInfotech.Data.TimeSeetDetail.Insert">
-            <summary>
-            Inser Into Customer Table.
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.TimeSeetDetail.Update">
-            <summary>
-            Inser Into Customer Table .
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.TimeSeetDetail.Delete">
-            <summary>
-            Delete From Customer Table.
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="F:NarolaInfotech.Data.clsTimeSheet.f_nmTimeSheetID">
-            <summary>
-            Get - Set Properties. 
-            </summary>
-        </member>
-        <member name="M:NarolaInfotech.Data.clsTimeSheet.Init(System.Data.DataSet)">
-            <summary>
-            Initialization
-            </summary>
-            <param name="ds"></param>
-        </member>
-        <member name="M:NarolaInfotech.Data.clsTimeSheet.Insert">
-            <summary>
-            Inser Into Customer Table.
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.clsTimeSheet.Update">
-            <summary>
-            Inser Into Customer Table .
-            </summary>
-            <returns>1/0</returns>
-        </member>
-        <member name="M:NarolaInfotech.Data.clsTimeSheet.Delete">
-            <summary>
-            Delete From Customer Table.
-            </summary>
-            <returns>1/0</returns>
         </member>
     </members>
 </doc>

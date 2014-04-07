@@ -11,10 +11,6 @@ namespace TimeSheet
 {
   public class Admin
   {
-
-   DbFunctions dbF = new DbFunctions();
-      
-
     #region Properties
     /// <summary>
     /// Get - Set Properties. 
@@ -46,11 +42,17 @@ namespace TimeSheet
     #region Load
     public DataSet Load()
     {
-      
-      	
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      string sqlCommand = "sp_Admin_SelectAll";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+
+      // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = dbF.Load();
+      loDataSet = db.ExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 
@@ -88,13 +90,31 @@ namespace TimeSheet
 
     #region Login
     public bool Login()
-    {       
+    {
+      DataSet loDataSet = null;
+      try
+      {
+        // default database service is determined through configuration.
+        Database db = DatabaseFactory.CreateDatabase();
 
-        if(dbF.AuthenticateUser(f_szUserName,f_szPassword))
-          return true;
-        else
+        string sqlCommand = "sp_Admin_Login";
+        DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+          //Add Parameter.
+        db.AddInParameter(dbCommand, "szUserName", DbType.String, this.szUserName);
+        db.AddInParameter(dbCommand, "szPassword", DbType.String,clsSecure.EncryptText(this.szPassword));
+        
+        //DbCommand dbCommand = db.GetSqlStringCommand(Queries.sp_Admin_Login(this.szUserName,clsSecure.EncryptText(this.szPassword)));
+        loDataSet = db.ExecuteDataSet(dbCommand);
+
+        if (clsFunctions.GetRowCountOfDataSet(loDataSet, 0) == 0) return false;
+      
+        return true;
+      }
+      catch (Exception ex)
+      {
+        this.m_ErrorMessage = ex.Message;
         return false;
-
+      }
     }
     #endregion
 
@@ -113,31 +133,71 @@ namespace TimeSheet
     #region GetTimeSheetByUserwise
     public DataSet GetTimeSheetByUserwise(DateTime dtStartDate, DateTime dtEndDate, int lnUserID)
     {
-       DataSet loDataSet = null;
-       loDataSet = dbF.GetTimeSheetByUserwise(dtStartDate, dtEndDate, lnUserID);
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      string sqlCommand = "GetTimeSheetByUserwise";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      db.AddInParameter(dbCommand, "UserID", DbType.Int32, lnUserID);
+      //DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetTimeSheetByUserwise(dtStartDate, dtStartDate, lnUserID));
+      // DataSet that will hold the returned results		
+      DataSet loDataSet = null;
+
+      loDataSet = db.ExecuteDataSet(dbCommand);
+
       // Note: connection was closed by ExecuteDataSet method call 
-       return loDataSet;
+
+      return loDataSet;
     }
     #endregion
 
     #region GetTimeSheetByProjectwise
     public DataSet GetTimeSheetByProjectwise(DateTime dtStartDate, DateTime dtEndDate, int lnProjectID )
     {
-     
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      string sqlCommand = "GetTimeSheetByProjectwise";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
+
+
+      //DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetTimeSheetByProjectwise(dtStartDate,dtEndDate,lnProjectID));
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
-      loDataSet = dbF.GetTimeSheetByProjectwise(dtStartDate, dtEndDate, lnProjectID);
+
+      loDataSet = db.ExecuteDataSet(dbCommand);
+
       // Note: connection was closed by ExecuteDataSet method call 
+
       return loDataSet;
     }
 
 
     public DataSet GetTimeSheetByProjectwise_Without_module(DateTime dtStartDate, DateTime dtEndDate, int lnProjectID ,  int moduleid)
     {
-        
+        // Create the Database object, using the default database service. The
+        // default database service is determined through configuration.
+        Database db = DatabaseFactory.CreateDatabase();
+
+        string sqlCommand = "GetTimeSheetByProjectwiseWithoutModule";
+        DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+        db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+        db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+        db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
+        db.AddInParameter(dbCommand, "ModuleID", DbType.Int32, moduleid);
+
+        //DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetTimeSheetByProjectwise(dtStartDate,dtEndDate,lnProjectID));
         // DataSet that will hold the returned results		
         DataSet loDataSet = null;
-        loDataSet = dbF.GetTimeSheetByProjectwise_Without_module(dtStartDate, dtEndDate, lnProjectID, moduleid);
+
+        loDataSet = db.ExecuteDataSet(dbCommand);
 
         // Note: connection was closed by ExecuteDataSet method call 
 
@@ -154,10 +214,22 @@ namespace TimeSheet
                                                   int lnProjectID,
                                                   int lnUserID)
     {
-      	
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      //string sqlCommand = "GetTimeSheetByProject_USERwise";
+      //DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      //db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      //db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      //db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
+      //db.AddInParameter(dbCommand, "UserID", DbType.Int32, lnUserID);
+
+      DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetTimeSheetByProject_USERwise(dtStartDate,dtEndDate,lnProjectID,lnUserID));
+      // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = dbF.GetTimeSheetByProject_USERwise(dtStartDate, dtEndDate, lnProjectID, lnUserID);
+      loDataSet = db.ExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 
@@ -170,11 +242,20 @@ namespace TimeSheet
                                         DateTime dtEndDate,
                                         int lnUserID)
     {
-     
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      //string sqlCommand = "GetUserEfficacyReport";
+      //DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      //db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      //db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      //db.AddInParameter(dbCommand, "UserID", DbType.Int32, lnUserID);
+      DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetUserEfficacyReoprt(dtStartDate, dtEndDate, lnUserID));
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = dbF.GetUserEfficacyReoprt(dtStartDate, dtEndDate, lnUserID);
+      loDataSet = db.ExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 
@@ -187,10 +268,23 @@ namespace TimeSheet
                                         DateTime dtEndDate,
                                         int lnUserID)
     {
-      	
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      //string sqlCommand = "GetUserProjectReport";
+      //DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      //db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      //db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      //db.AddInParameter(dbCommand, "UserID", DbType.Int32, lnUserID);
+      DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetUserProjectReport(dtStartDate, dtEndDate, lnUserID));
+      // DataSet that will hold the returned results		
       DataSet loDataSet = null;
-      loDataSet = dbF.GetUserProjectReport(dtStartDate, dtEndDate, lnUserID);
+
+      loDataSet = db.ExecuteDataSet(dbCommand);
+
       // Note: connection was closed by ExecuteDataSet method call 
+
       return loDataSet;
     }
     #endregion
@@ -200,11 +294,20 @@ namespace TimeSheet
                                         DateTime dtEndDate,
                                         int lnProjectID)
     {
-      
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      string sqlCommand = "GetProjectUserwise";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
+
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = dbF.GetProjectUserwise(dtStartDate, dtEndDate, lnProjectID);
+      loDataSet = db.ExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 
@@ -216,12 +319,24 @@ namespace TimeSheet
     public DataSet GetProjectModulewiseReport(DateTime dtStartDate,
                                               DateTime dtEndDate,
                                               int lnProjectID)
-    {    
+    {
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      string sqlCommand = "GetProjectModulewiseReport";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
+      db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
+      db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
 
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
-      loDataSet = dbF.GetProjectModulewiseReport(dtStartDate, dtEndDate, lnProjectID);
+
+      loDataSet = db.ExecuteDataSet(dbCommand);
+
       // Note: connection was closed by ExecuteDataSet method call 
+
       return loDataSet;
     }
     #endregion
@@ -244,8 +359,23 @@ namespace TimeSheet
     public int Insert()
     {
       try
-      {       
-        return dbF.Insert(this.f_szUserName,this.f_szPassword);           
+      {
+        // Create the Database object, using the default database service. The
+        // default database service is determined through configuration.
+        Database db = DatabaseFactory.CreateDatabase();
+
+        //create command
+        string sqlCommand = "sp_Admin_Insert";
+        DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+
+        // Set Parameters.
+        db.AddInParameter(dbCommand, "szUserName", DbType.String, this.szUserName);
+        db.AddInParameter(dbCommand, "szPassword", DbType.String, clsSecure.EncryptText(this.szPassword));
+
+        //Execute NonQuery.
+        db.ExecuteNonQuery(dbCommand);
+        return (int)clsMessage.RETURN_STATUS.OK;
+
       }
       catch (Exception ex)
       {
@@ -266,7 +396,22 @@ namespace TimeSheet
     {
       try
       {
-          return dbF.Update(this.f_szUserName, this.f_szPassword);
+        // Create the Database object, using the default database service. The
+        // default database service is determined through configuration.
+        Database db = DatabaseFactory.CreateDatabase();
+
+        //create command
+        string sqlCommand = "sp_Admin_Update";
+        DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+
+        // Set Parameters.
+        db.AddInParameter(dbCommand, "szUserName", DbType.String, this.szUserName);
+        db.AddInParameter(dbCommand, "szPassword", DbType.String, clsSecure.EncryptText(this.szPassword));
+
+        //Execute NonQuery.
+        db.ExecuteNonQuery(dbCommand);
+        return (int)clsMessage.RETURN_STATUS.OK;
+
       }
       catch (Exception ex)
       {
@@ -288,7 +433,20 @@ namespace TimeSheet
       string lsMessage = string.Empty;
       try
       {
-          return dbF.Delete(this.f_szUserName);
+        // default database service is determined through configuration.
+        Database db = DatabaseFactory.CreateDatabase();
+
+        //create command
+        string sqlCommand = "sp_Admin_DeleteRow";
+        DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+
+        // Set Parameters.
+        db.AddInParameter(dbCommand, "szUserName", DbType.String, this.szUserName);
+
+        //Execute NonQuery.
+        db.ExecuteNonQuery(dbCommand);
+
+        return lsMessage;
       }
       catch (Exception ex)
       {
@@ -309,7 +467,22 @@ namespace TimeSheet
     {
       try
       {
-          return dbF.ChangePassword(this.f_szUserName, this.f_szPassword);
+        // Create the Database object, using the default database service. The
+        // default database service is determined through configuration.
+        Database db = DatabaseFactory.CreateDatabase();
+
+        //create command
+        string sqlCommand = "sp_Admin_ChangePassword";
+        DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+
+        // Set Parameters.
+        db.AddInParameter(dbCommand, "szUserName", DbType.String, this.szUserName);
+        db.AddInParameter(dbCommand, "szPassword", DbType.String, clsSecure.EncryptText(this.szPassword));
+
+        //Execute NonQuery.
+        db.ExecuteNonQuery(dbCommand);
+        return (int)clsMessage.RETURN_STATUS.OK;
+
       }
       catch (Exception ex)
       {

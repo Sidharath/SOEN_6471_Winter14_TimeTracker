@@ -25,7 +25,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "TimeSheet", "TimeSheet\", "
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "12489"
+		VWDPort = "3890"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Narolainfotech.utility", "Narolainfotech.utility\Narolainfotech.utility.csproj", "{B5AB0D6F-D22D-4FDF-B77A-5B784E5A31D6}"

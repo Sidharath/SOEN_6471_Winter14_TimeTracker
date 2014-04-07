@@ -73,7 +73,7 @@
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <FxCopRules>-Microsoft.Design#CA2210</FxCopRules>
     <RunFxCop>false</RunFxCop>
@@ -153,7 +153,6 @@
     <Compile Include="DatabaseProviderFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DbFunctions.cs" />
     <Compile Include="GenericDatabaseAssembler.cs" />
     <Compile Include="Instrumentation\CommandFailedEvent.cs" />
     <Compile Include="Instrumentation\ConnectionFailedEvent.cs" />
@@ -203,13 +202,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries.cs" />
     <Compile Include="Sql\SqlDatabase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sql\SqlDatabaseAssembler.cs" />
-    <Compile Include="TimeSeetDetail.cs" />
-    <Compile Include="TimeSheet.cs" />
     <Compile Include="TransactionScopeConnections.cs" />
     <Compile Include="UpdateBehavior.cs">
       <SubType>Code</SubType>
@@ -254,10 +250,6 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{A09297C8-2C40-470B-8856-D856676DDFFA}</Project>
       <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Narolainfotech.utility\Narolainfotech.utility.csproj">
-      <Project>{B5AB0D6F-D22D-4FDF-B77A-5B784E5A31D6}</Project>
-      <Name>Narolainfotech.utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
