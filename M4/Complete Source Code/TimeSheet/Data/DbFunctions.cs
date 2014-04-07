@@ -13,6 +13,11 @@ namespace NarolaInfotech.Data
     /// </summary>
     public class DbFunctions
     {
+        #region Database Object
+
+        private Database db;
+
+        #endregion
 
         #region Load
 
@@ -68,11 +73,9 @@ namespace NarolaInfotech.Data
            DataSet loDataSet = null;
            try
            {
-               // default database service is determined through configuration.
-               Database db = DatabaseFactory.CreateDatabase();
-
+               
                string sqlCommand = "sp_Admin_Login";
-               DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+               DbCommand dbCommand = getDBCommand(sqlCommand);
                //Add Parameter.
                db.AddInParameter(dbCommand, "szUserName", DbType.String, UserName);
                db.AddInParameter(dbCommand, "szPassword", DbType.String, clsSecure.EncryptText(Password));
@@ -111,12 +114,10 @@ namespace NarolaInfotech.Data
        
         public DataSet GetTimeSheetByUserwise(DateTime dtStartDate, DateTime dtEndDate, int lnUserID)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
+           // Create the Database object, using the default database service. The           
 
            string sqlCommand = "GetTimeSheetByUserwise";
-           DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+           DbCommand dbCommand = getDBCommand(sqlCommand);
            db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
            db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
            db.AddInParameter(dbCommand, "UserID", DbType.Int32, lnUserID);
@@ -152,11 +153,9 @@ namespace NarolaInfotech.Data
        public DataSet GetTimeSheetByProjectwise(DateTime dtStartDate, DateTime dtEndDate, int lnProjectID)
        {
            // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
-
+         
            string sqlCommand = "GetTimeSheetByProjectwise";
-           DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+           DbCommand dbCommand = getDBCommand(sqlCommand);
            db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
            db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
            db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
@@ -193,12 +192,9 @@ namespace NarolaInfotech.Data
 
        public DataSet GetTimeSheetByProjectwise_Without_module(DateTime dtStartDate, DateTime dtEndDate, int lnProjectID, int moduleid)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
-
+          
            string sqlCommand = "GetTimeSheetByProjectwiseWithoutModule";
-           DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+           DbCommand dbCommand = getDBCommand(sqlCommand);
            db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
            db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
            db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
@@ -237,10 +233,7 @@ namespace NarolaInfotech.Data
                                                  int lnProjectID,
                                                  int lnUserID)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
-
+           
            DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetTimeSheetByProject_USERwise(dtStartDate, dtEndDate, lnProjectID, lnUserID));
            // DataSet that will hold the returned results		
            DataSet loDataSet = null;
@@ -272,10 +265,7 @@ namespace NarolaInfotech.Data
                                            DateTime dtEndDate,
                                            int lnUserID)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
-
+           
            //string sqlCommand = "GetUserEfficacyReport";
            //DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
            //db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
@@ -312,15 +302,7 @@ namespace NarolaInfotech.Data
                                            DateTime dtEndDate,
                                            int lnUserID)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
-
-           //string sqlCommand = "GetUserProjectReport";
-           //DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
-           //db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
-           //db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
-           //db.AddInParameter(dbCommand, "UserID", DbType.Int32, lnUserID);
+          
            DbCommand dbCommand = db.GetSqlStringCommand(Queries.GetUserProjectReport(dtStartDate, dtEndDate, lnUserID));
            // DataSet that will hold the returned results		
            DataSet loDataSet = null;
@@ -351,12 +333,10 @@ namespace NarolaInfotech.Data
                                            DateTime dtEndDate,
                                            int lnProjectID)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
+           
 
            string sqlCommand = "GetProjectUserwise";
-           DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+           DbCommand dbCommand = getDBCommand(sqlCommand);
            db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
            db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
            db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
@@ -392,12 +372,8 @@ namespace NarolaInfotech.Data
                                                  DateTime dtEndDate,
                                                  int lnProjectID)
        {
-           // Create the Database object, using the default database service. The
-           // default database service is determined through configuration.
-           Database db = DatabaseFactory.CreateDatabase();
-
            string sqlCommand = "GetProjectModulewiseReport";
-           DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+           DbCommand dbCommand = getDBCommand(sqlCommand);
            db.AddInParameter(dbCommand, "StartDate", DbType.DateTime, dtStartDate);
            db.AddInParameter(dbCommand, "EndDate", DbType.DateTime, dtEndDate);
            db.AddInParameter(dbCommand, "ProjectID", DbType.Int32, lnProjectID);
@@ -433,7 +409,7 @@ namespace NarolaInfotech.Data
 
                //create command
                string sqlCommand = "sp_Admin_Insert";
-               DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+               DbCommand dbCommand = getDBCommand(sqlCommand);
 
                // Set Parameters.
                db.AddInParameter(dbCommand, "szUserName", DbType.String, UserName);
@@ -462,13 +438,9 @@ namespace NarolaInfotech.Data
        {
            try
            {
-               // Create the Database object, using the default database service. The
-               // default database service is determined through configuration.
-               Database db = DatabaseFactory.CreateDatabase();
-
                //create command
                string sqlCommand = "sp_Admin_Update";
-               DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+               DbCommand dbCommand = getDBCommand(sqlCommand);
 
                // Set Parameters.
                db.AddInParameter(dbCommand, "szUserName", DbType.String, UserName);
@@ -498,12 +470,9 @@ namespace NarolaInfotech.Data
            string lsMessage = string.Empty;
            try
            {
-               // default database service is determined through configuration.
-               Database db = DatabaseFactory.CreateDatabase();
-
-               //create command
+                //create command
                string sqlCommand = "sp_Admin_DeleteRow";
-               DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+               DbCommand dbCommand = getDBCommand(sqlCommand);
 
                // Set Parameters.
                db.AddInParameter(dbCommand, "szUserName", DbType.String, UserName);
@@ -531,13 +500,9 @@ namespace NarolaInfotech.Data
        {
            try
            {
-               // Create the Database object, using the default database service. The
-               // default database service is determined through configuration.
-               Database db = DatabaseFactory.CreateDatabase();
-
                //create command
                string sqlCommand = "sp_Admin_ChangePassword";
-               DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+               DbCommand dbCommand = getDBCommand(sqlCommand);
 
                // Set Parameters.
                db.AddInParameter(dbCommand, "szUserName", DbType.String, UserName);
@@ -555,7 +520,18 @@ namespace NarolaInfotech.Data
        }
 
        #endregion
-       
+
+       #region Extract Method for DB Command
+
+       public DbCommand getDBCommand(string sqlCommand)
+       {
+           db = DatabaseFactory.CreateDatabase();
+           DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+           return dbCommand;
+       }
+       #endregion
+
+
     }
 
 
