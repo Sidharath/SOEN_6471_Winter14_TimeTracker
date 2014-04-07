@@ -5,28 +5,52 @@ using System.Data.Common;
 using System.Text;
 using NarolaInfotech.Data;
 using NarolaInfotech.Utility;
-namespace TimeSheet
+namespace NarolaInfotech.Data
 {
-  public class Hours
+  public class TimeSeetDetail
   {
     #region Properties
     /// <summary>
     /// Get - Set Properties. 
     /// </summary>
-    private int f_nmHourID;
-    public int nmHourID
+    private int f_nmTimeSheetDetail;
+    public int nmTimeSheetDetail
+    {
+      get { return f_nmTimeSheetDetail; }
+      set { f_nmTimeSheetDetail = value; }
+    }
+
+    private string f_szDetail;
+    public string szDetail
+    {
+      get { return f_szDetail; }
+      set { f_szDetail = value; }
+    }
+
+    private string f_nmHourID;
+    public string nmHourID
     {
       get { return f_nmHourID; }
       set { f_nmHourID = value; }
     }
-
-    private decimal f_nmHourValue;
-    public decimal nmHourValue
+    private int f_nmTimeSheetID;
+    public int nmTimeSheetID
     {
-      get { return f_nmHourValue; }
-      set { f_nmHourValue = value; }
+      get { return f_nmTimeSheetID; }
+      set { f_nmTimeSheetID = value; }
     }
-
+    private int f_nmModule;
+    public int nmModule
+    {
+      get { return f_nmModule; }
+      set { f_nmModule = value; }
+    }
+    private int f_nmProjectID;
+    public int nmProjectID
+    {
+      get { return f_nmProjectID; }
+      set { f_nmProjectID = value; }
+    }
     private String m_ErrorMessage;
     public String ErrorMessage
     {
@@ -38,18 +62,15 @@ namespace TimeSheet
     //                                                              Fetch Data Block
     //=========================================================================================================================
     #region Load
-    public DataSet Load(params string[] stParam)
+    public DataSet Load()
     {
       // Create the Database object, using the default database service. The
       // default database service is determined through configuration.
       Database db = DatabaseFactory.CreateDatabase();
 
-      string sqlCommand = "sp_Hours_SelectAll";
-      //DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+      string sqlCommand = "sp_TimeSheetDetail_SelectAll";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
 
-      ////Add Parameter.
-      //db.AddInParameter(dbCommand, "Search", DbType.String, (stParam.Length == 1) ? stParam[0] : string.Empty);
-      DbCommand dbCommand = db.GetSqlStringCommand(Queries.sp_Hours_SelectAll((stParam.Length == 1) ? stParam[0] : string.Empty));
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
@@ -70,10 +91,10 @@ namespace TimeSheet
         // default database service is determined through configuration.
         Database db = DatabaseFactory.CreateDatabase();
 
-        string sqlCommand = "sp_Hours_SelectRow";
+        string sqlCommand = "sp_TimeSheetDetail_SelectRow";
         DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
         //Add Parameter.
-        db.AddInParameter(dbCommand, "nmHourID", DbType.Int32, this.nmHourID);
+        db.AddInParameter(dbCommand, "nmTimeSheetDetail", DbType.Int32, this.nmTimeSheetDetail);
 
         loDataSet = db.ExecuteDataSet(dbCommand);
 
@@ -89,6 +110,31 @@ namespace TimeSheet
     }
     #endregion
 
+    #region GetAllDetailByID
+    public DataSet GetAllDetailByID()
+    {
+      // Create the Database object, using the default database service. The
+      // default database service is determined through configuration.
+      Database db = DatabaseFactory.CreateDatabase();
+
+      string sqlCommand = "sp_TimeSheetDetail_By_TimeSheetID";
+      DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
+
+      ////Add Parameter.
+      db.AddInParameter(dbCommand, "nmTimeSheetID", DbType.Int32, this.nmTimeSheetID);
+
+      //  DbCommand dbCommand=db.GetSqlStringCommand(Queries.sp_TimeSheetDetail_By_TimeSheetID(this.nmTimeSheetID));
+      // DataSet that will hold the returned results		
+      DataSet loDataSet = null;
+
+      loDataSet = db.ExecuteDataSet(dbCommand);
+
+      // Note: connection was closed by ExecuteDataSet method call 
+
+      return loDataSet;
+    }
+    #endregion
+
     #region Init
     /// <summary>
     /// Initialization
@@ -96,8 +142,13 @@ namespace TimeSheet
     /// <param name="ds"></param>
     private void Init(DataSet ds)
     {
-      this.nmHourID = Convert.ToInt32(clsFunctions.GetDataSetValue(ds, 0, "nmHourID", 0));
-      this.nmHourValue = Convert.ToDecimal(clsFunctions.GetDataSetValue(ds, 0, "nmHourValue", 0));
+      this.nmTimeSheetDetail = Convert.ToInt32(clsFunctions.GetDataSetValue(ds, 0, "nmTimeSheetDetail", 0));
+      this.szDetail = Convert.ToString(clsFunctions.GetDataSetValue(ds, 0, "szDetail", string.Empty));
+      //this.nmHourID = Convert.ToInt32(clsFunctions.GetDataSetValue(ds, 0, "nmHourID", 0));
+      this.nmHourID = clsFunctions.GetDataSetValue(ds, 0, "nmHourID", 0).ToString();
+      this.nmTimeSheetID = Convert.ToInt32(clsFunctions.GetDataSetValue(ds, 0, "nmTimeSheetID", 0));
+      this.nmModule = Convert.ToInt32(clsFunctions.GetDataSetValue(ds, 0, "nmModule", 0));
+      this.nmProjectID = Convert.ToInt32(clsFunctions.GetDataSetValue(ds, 0, "nmProjectID", 0));
     }
     #endregion
 
@@ -109,6 +160,7 @@ namespace TimeSheet
     //=========================================================================================================================
     //                                                            Modification Data Block
     //=========================================================================================================================
+
     #region Insert Operation
 
     /// <summary>
@@ -124,13 +176,18 @@ namespace TimeSheet
         Database db = DatabaseFactory.CreateDatabase();
 
         //create command
-        string sqlCommand = "sp_Hours_Insert";
+        string sqlCommand = "sp_TimeSheetDetail_Insert";
         DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
 
-        // Set Parameters.
-        db.AddInParameter(dbCommand, "nmHourValue", DbType.Decimal, this.nmHourValue);
-
+        //// Set Parameters.
+        db.AddInParameter(dbCommand, "szDetail", DbType.String, this.szDetail);
+        db.AddInParameter(dbCommand, "nmHourID", DbType.String, this.nmHourID);
+        db.AddInParameter(dbCommand, "nmTimeSheetID", DbType.Int32, this.nmTimeSheetID);
+        db.AddInParameter(dbCommand, "nmModule", DbType.Int32, this.nmModule);
+        db.AddInParameter(dbCommand, "nmProjectID", DbType.Int32, this.nmProjectID);
+       // DbCommand dbCommand = db.GetSqlStringCommand(Queries.sp_TimeSheetDetail_Insert(this));
         //Execute NonQuery.
+
         db.ExecuteNonQuery(dbCommand);
         return (int)clsMessage.RETURN_STATUS.OK;
 
@@ -159,12 +216,16 @@ namespace TimeSheet
         Database db = DatabaseFactory.CreateDatabase();
 
         //create command
-        string sqlCommand = "sp_Hours_Update";
+        string sqlCommand = "sp_TimeSheetDetail_Update";
         DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
 
         // Set Parameters.
-        db.AddInParameter(dbCommand, "nmHourID", DbType.Decimal, this.nmHourID);
-        db.AddInParameter(dbCommand, "nmHourValue", DbType.Decimal, this.nmHourValue);
+        db.AddInParameter(dbCommand, "szDetail", DbType.String, this.szDetail);
+        db.AddInParameter(dbCommand, "nmHourID", DbType.String, this.nmHourID);
+        db.AddInParameter(dbCommand, "nmTimeSheetID", DbType.Int32, this.nmTimeSheetID);
+        db.AddInParameter(dbCommand, "nmModule", DbType.Int32, this.nmModule);
+        db.AddInParameter(dbCommand, "nmProjectID", DbType.Int32, this.nmProjectID);
+        db.AddInParameter(dbCommand, "nmTimeSheetDetail", DbType.Int32, this.nmTimeSheetDetail);
 
         //Execute NonQuery.
         db.ExecuteNonQuery(dbCommand);
@@ -195,11 +256,11 @@ namespace TimeSheet
         Database db = DatabaseFactory.CreateDatabase();
 
         //create command
-        string sqlCommand = "sp_Hours_DeleteRow";
+        string sqlCommand = "sp_TimeSheetDetail_DeleteRow";
         DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
 
         // Set Parameters.
-        db.AddInParameter(dbCommand, "nmHourID", DbType.Int32, this.nmHourID);
+        db.AddInParameter(dbCommand, "nmTimeSheetDetail", DbType.Int32, this.nmTimeSheetDetail);
 
         //Execute NonQuery.
         db.ExecuteNonQuery(dbCommand);

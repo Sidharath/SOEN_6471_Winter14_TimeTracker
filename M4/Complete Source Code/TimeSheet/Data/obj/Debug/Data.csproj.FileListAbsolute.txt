@@ -46,10 +46,17 @@ E:\TimeSheet\Final_Binding\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.Properti
 E:\TimeSheet\Final_Binding\TimeSheet\Data\obj\Debug\Data.csproj.GenerateResource.Cache
 E:\TimeSheet\Final_Binding\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.dll
 E:\TimeSheet\Final_Binding\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.pdb
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\ResolveAssemblyReference.cache
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.resources
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.Properties.Resources.resources
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\ResGen.read.1.tlog
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\ResGen.write.1.tlog
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.dll
-J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.pdb
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\NarolaInfotech.Data.dll
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\NarolaInfotech.Data.pdb
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\Microsoft.Practices.ObjectBuilder.dll
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\NarolaInfotech.Common.dll
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\NarolaInfotech.Common.pdb
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\NarolaInfotech.Common.xml
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.Configuration.Manageability.Properties.Resources.resources
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.Properties.Resources.resources
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\Data.csproj.GenerateResource.Cache
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.dll
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\obj\Debug\NarolaInfotech.Data.pdb
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\Narolainfotech.utility.dll
+C:\Users\Akash\Desktop\ProjSOEN6471\TimeSheet2.0\TimeSheet2.0\Complete Source Code\TimeSheet\Data\bin\Debug\Narolainfotech.utility.pdb
