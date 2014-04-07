@@ -73,7 +73,7 @@ namespace TimeSheet
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = db.ExecuteDataSet(dbCommand);
+      loDataSet = db.TimeSheetExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 
@@ -99,7 +99,7 @@ namespace TimeSheet
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = db.ExecuteDataSet(dbCommand);
+      loDataSet = db.TimeSheetExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 
@@ -121,7 +121,7 @@ namespace TimeSheet
         //Add Parameter.
         db.AddInParameter(dbCommand, "nmAdminPermission", DbType.Int32, this.nmAdminPermission);
 
-        loDataSet = db.ExecuteDataSet(dbCommand);
+        loDataSet = db.TimeSheetExecuteDataSet(dbCommand);
 
         if (clsFunctions.GetRowCountOfDataSet(loDataSet, 0) == 0) return (int)clsMessage.RETURN_STATUS.NOT_OK;
         Init(loDataSet);
@@ -166,7 +166,7 @@ namespace TimeSheet
       // DataSet that will hold the returned results		
       DataSet loDataSet = null;
 
-      loDataSet = db.ExecuteDataSet(dbCommand);
+      loDataSet = db.TimeSheetExecuteDataSet(dbCommand);
 
       // Note: connection was closed by ExecuteDataSet method call 
 

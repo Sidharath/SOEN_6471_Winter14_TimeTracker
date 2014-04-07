@@ -462,7 +462,7 @@ namespace NarolaInfotech.Data
 		/// </summary>
 		/// <param name="command"><para>The <see cref="DbCommand"/> to execute.</para></param>
 		/// <returns>A <see cref="DataSet"/> with the results of the <paramref name="command"/>.</returns>        
-		public virtual DataSet ExecuteDataSet(DbCommand command)
+		public virtual DataSet TimeSheetExecuteDataSet(DbCommand command)
 		{
 			DataSet dataSet = new DataSet();
 			dataSet.Locale = CultureInfo.InvariantCulture;
@@ -502,7 +502,7 @@ namespace NarolaInfotech.Data
 		{
 			using (DbCommand command = GetStoredProcCommand(storedProcedureName, parameterValues))
 			{
-				return ExecuteDataSet(command);
+				return TimeSheetExecuteDataSet(command);
 			}
 		}
 
@@ -545,7 +545,7 @@ namespace NarolaInfotech.Data
 		{
 			using (DbCommand command = CreateCommandByCommandType(commandType, commandText))
 			{
-				return ExecuteDataSet(command);
+				return TimeSheetExecuteDataSet(command);
 			}
 		}
 
