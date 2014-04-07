@@ -1,0 +1,13 @@
+﻿<html>
+<body>
+<br>
+Hey {0},
+<br>
+It seems you did not enter timesheet for {1}. Kindly do the needful. It is necessary to fill time sheet daily. So kindly take care of it in the future.
+<br>
+P.S. If you were absent on {1}, you may ignore this email.
+<br>
+Note: It is auto generated email. Do not reply this email.
+
+</body>
+</html>

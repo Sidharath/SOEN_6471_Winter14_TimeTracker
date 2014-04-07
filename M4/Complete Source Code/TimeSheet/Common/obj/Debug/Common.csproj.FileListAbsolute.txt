@@ -1,0 +1,43 @@
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\obj\Debug\ResolveAssemblyReference.cache
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\obj\Debug\NarolaInfotech.Common.Configuration.Manageability.Properties.Resources.resources
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\obj\Debug\NarolaInfotech.Common.Properties.Resources.resources
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\obj\Debug\Common.csproj.GenerateResource.Cache
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\bin\Debug\NarolaInfotech.Common.dll
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\bin\Debug\NarolaInfotech.Common.pdb
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\bin\Debug\Microsoft.Practices.ObjectBuilder.dll
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\obj\Debug\NarolaInfotech.Common.dll
+E:\UJJAVAL\Project\TimeSheet\test\NarolaInfotech\Common\obj\Debug\NarolaInfotech.Common.pdb
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.dll
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.pdb
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\bin\Debug\Microsoft.Practices.ObjectBuilder.dll
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\obj\Debug\ResolveAssemblyReference.cache
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Configuration.Manageability.Properties.Resources.resources
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Properties.Resources.resources
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\obj\Debug\Common.csproj.GenerateResource.Cache
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.dll
+E:\UJJAVAL\Project\TimeSheet\test\t1\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.pdb
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.dll
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.pdb
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\bin\Debug\Microsoft.Practices.ObjectBuilder.dll
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\obj\Debug\ResolveAssemblyReference.cache
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Configuration.Manageability.Properties.Resources.resources
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Properties.Resources.resources
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\obj\Debug\Common.csproj.GenerateResource.Cache
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.dll
+E:\UJJAVAL\Project\TimeSheet\v1\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.pdb
+E:\TimeSheet\Final_Binding\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.dll
+E:\TimeSheet\Final_Binding\TimeSheet\Common\bin\Debug\NarolaInfotech.Common.pdb
+E:\TimeSheet\Final_Binding\TimeSheet\Common\bin\Debug\Microsoft.Practices.ObjectBuilder.dll
+E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\ResolveAssemblyReference.cache
+E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Configuration.Manageability.Properties.Resources.resources
+E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Properties.Resources.resources
+E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\Common.csproj.GenerateResource.Cache
+E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.dll
+E:\TimeSheet\Final_Binding\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.pdb
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\ResolveAssemblyReference.cache
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Configuration.Manageability.Properties.Resources.resources
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.Properties.Resources.resources
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\ResGen.read.1.tlog
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\ResGen.write.1.tlog
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.dll
+J:\concordia\winter2014\soen6471\my Project\TimeSheet2.0\Complete Source Code\TimeSheet\Common\obj\Debug\NarolaInfotech.Common.pdb

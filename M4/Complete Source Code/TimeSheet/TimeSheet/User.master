@@ -1,0 +1,94 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="User.master.cs" Inherits="Admin_User" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>Employee Management</title>
+    <link href="scripts/main.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="innerrepeatbg">
+    <form id="form1" runat="server">
+    <asp:ScriptManager ID="Script1" runat="server">
+        <Scripts>
+            <asp:ScriptReference Path="~/scripts/AjaxHack.js" />
+        </Scripts>
+    </asp:ScriptManager>
+    <div class="innerbg">
+        <div class="innermiddle" align="center">
+            <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" class="contentdefault">
+                <tr>
+                    <td height="25">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" valign="top">
+                        <asp:Label ID="lblUserName" runat="server" Text=""></asp:Label>
+                        |
+                        <asp:LinkButton ID="lnkLogout" runat="server" OnClick="LinkButton1_Click">Logout</asp:LinkButton>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" valign="middle">
+                        <table width="70%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <th height="65" align="left" valign="middle" scope="row">
+                                    <a href="<%=msRootPath %>/DashBoard.aspx">
+                                        <img src="<%=msRootPath%>/images/btn-dashboard.jpg" width="103" height="26" /></a><a
+                                            href="<%=msRootPath %>/Setting.aspx"><img src="<%=msRootPath%>/images/btn-settings.jpg"
+                                                width="86" height="26" /></a><a href="<%=msRootPath %>/UserModuleList.aspx"><img
+                                                    src="<%=msRootPath%>/images/btn-TimeSheet-task.jpg" /></a>
+                                </th>
+                                <td align="right" valign="middle">
+                                    <asp:UpdatePanel runat="Server" ID="UpdatePanel1">
+                                        <ContentTemplate>
+                                            <table width="300" border="0" cellpadding="0" cellspacing="0" class="contentwhite">
+                                                <tr>
+                                                    <td width="100" align="left" valign="middle">
+                                                        Total hours for :
+                                                    </td>
+                                                    <td width="19" align="left" valign="middle">
+                                                        <img src="<%=msRootPath%>/images/counse.jpg" width="11" height="47" />
+                                                    </td>
+                                                    <td width="146" align="left" valign="top">
+                                                        Current Week :
+                                                        <asp:Label ID="lblCurrentWeek" runat="server"></asp:Label>
+                                                        hr
+                                                        <p class="space10px">
+                                                        </p>
+                                                        Current Month :
+                                                        <asp:Label ID="lblCurrentMonth" runat="server"></asp:Label>
+                                                        hr
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" valign="middle">
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="innercontent" align="center">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        <div class="footer">
+            Copyright © 2009 -  <% Response.Write(DateTime.Now.ToString("yy"));%>  <a href="http://www.narolainfotech.com" target="_blank" class="footercolor">
+                Narolainfotech</a> | All Rights Reserved.</div>
+    </div>
+    </form>
+</body>
+</html>

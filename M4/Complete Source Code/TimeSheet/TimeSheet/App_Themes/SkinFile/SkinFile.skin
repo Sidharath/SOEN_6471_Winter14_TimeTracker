@@ -1,0 +1,9 @@
+﻿<asp:GridView runat="server" CellPadding="3" CssClass="datagrid" BorderWidth="0px" Style=" border:1px solid #ECE9D8;" >
+ <RowStyle CssClass="datagrid_td" BorderWidth="0" />
+ <AlternatingRowStyle CssClass="datagrid_alternat_td"/>
+  <HeaderStyle CssClass="datagrid_thead" HorizontalAlign="Left" BorderColor="#f0f0f0"/>     
+  <PagerStyle ForeColor="white" Font-Bold="True" HorizontalAlign="Center" />
+  <PagerSettings FirstPageText="First Page" LastPageText="LastPage" Mode="NumericFirstLast"
+      Position="Top" FirstPageImageUrl="/TimeSheet/Images/paging_first.png" LastPageImageUrl="/TimeSheet/Images/paging_last.png" PageButtonCount="15" />
+  <PagerStyle ForeColor="Black" HorizontalAlign="Right" CssClass="pager"/>
+</asp:GridView>
